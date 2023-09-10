@@ -1,0 +1,17 @@
+{{- if .Values.pv.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.pv.name | quote }}
+  labels:
+    type: local
+spec:
+  storageClassName: {{ .Values.pv.storageClassName | quote }}
+  capacity:
+    storage: {{ .Values.pv.storage | quote }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: {{ required "Existing host path required." .Values.pv.path | quote }} # Needs to exists before PV creation!
+  persistentVolumeReclaimPolicy: Retain
+{{- end }}

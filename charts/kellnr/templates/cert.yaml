@@ -1,0 +1,15 @@
+{{- if .Values.certificate.enabled -}}
+{{- $fullName := include "kellnr.fullname" . -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $fullName }}
+spec:
+  commonName: {{ .Values.kellnr.apiAddress }}
+  dnsNames:
+    - {{ .Values.kellnr.apiAddress }}
+  secretName: {{ .Values.certificate.secretName }}
+  issuerRef:
+    name: {{ required "A valid certificate issuer is required." .Values.certificate.issuerRef.name | quote }}
+    kind: {{ .Values.certificate.issuerRef.kind | quote }}
+{{- end }}

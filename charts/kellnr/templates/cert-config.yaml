@@ -1,0 +1,13 @@
+# ConfigMap which allows a certificate to be mapped and installed into the
+# Kellnr container. Needed for the Rustdoc auto-generation feature, as Kellnr needs
+# to be able, to download crate dependencies from itself. To do so, Kellnr needs to trust
+# it's own certificate root.
+
+{{- if and .Values.importCert.enabled (eq .Values.importCert.useExisting false) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.importCert.configMapName }}
+data:
+  kellnr-cert.crt: {{ .Values.importCert.certificate | toYaml | indent 1 }}
+{{- end }}

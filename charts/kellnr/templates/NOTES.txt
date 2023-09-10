@@ -1,0 +1,9 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Installed Chart version: {{ .Chart.Version }}
+Installed Kellnr version: {{ .Chart.AppVersion }}
+
+  - Web UI & API Endpoint: "{{ .Values.kellnr.apiProtocol }}://{{ .Values.kellnr.apiAddress }}"
+  - Crate Index Endpoint: "git://{{ .Values.kellnr.apiAddress }}:{{ .Values.service.index.nodePort }}/index"
+
+For documentation on how to configure Cargo to use Kellnr, see: https://kellnr.io/documentation

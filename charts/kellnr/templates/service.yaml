@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kellnr.fullname" . }}
+  labels:
+    {{- include "kellnr.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.api.type }}
+  ports:
+    - name: kellnr-api
+      port: {{ .Values.service.api.port }}
+      protocol: TCP
+  selector:
+    {{- include "kellnr.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kellnr.fullname" . }}-idx
+  labels:
+    {{- include "kellnr.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.index.type }}
+  selector:
+    {{- include "kellnr.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: kellnr-index
+      protocol: TCP
+      port: {{ .Values.service.index.port }}
+      nodePort: {{ .Values.service.index.nodePort }}
