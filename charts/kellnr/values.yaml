@@ -43,32 +43,49 @@ deployment:
     name: "kellnr-storage"
     persistentVolumeClaim: "kellnr"
 
+configMap:
+  name: "kellnr-config"
+
 kellnr:
-  apiAddress: ""
-  apiProtocol: "http"
-  adminPwd: "kellnr"
-  adminToken: "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD"
-  logLevel: "info"
-  logLevelRocket: "warn"
-  logFormat: "compact"
-  rustdocAutoGen: "true"
-  cratesIoProxy: false
-  cacheSize: 1000
-  maxCrateSize: 100
-  maxDocsSize: 100
-  cratesIoNumThreads: 10
-  gitIndex: "false"
-  authRequired: "false"
+  setup:
+    adminPwd: "admin"
+    adminToken: "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD"
+  registry:
+    dataDir: "/opt/kdata"
+    sessionAgeSeconds: 28800
+    cacheSize: 1000
+    maxCrateSize: 10
+    authRequired: false
+  docs:
+    enabled: false
+    maxSize: 100
+  proxy:
+    enabled: false
+    numThreads: 20
+  log:
+    level: "info"
+    format: "compact"
+    levelWebServer: "warn"
+  local:
+    ip: "0.0.0.0"
+    port: 8000
+  origin:
+    hostname: "127.0.0.1"
+    port: 8000
+    protocol: "http"
+  postgres:
+    enabled: false
+    address: "localhost"
+    port: 5432
+    db: "kellnr"
+    user: ""
+    pwd: ""
 
 service:
   api:
     type: ClusterIP
     port: 80
     port_proxy: 80
-  index:
-    type: NodePort
-    port: 9418
-    nodePort: 30418
 
 pv:
   enabled: false

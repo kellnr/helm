@@ -26,14 +26,14 @@ spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if eq .Values.kellnr.apiProtocol "https" }}
+  {{- if eq .Values.kellnr.origin.protocol "https" }}
   tls:
   - secretName: {{ .Values.ingress.tls.secretName }}
     hosts:
-    - {{ .Values.kellnr.apiAddress }}
+    - {{ .Values.kellnr.origin.hostname }}
   {{- end }}
   rules:
-  - host: {{ .Values.kellnr.apiAddress | quote }}
+  - host: {{ .Values.kellnr.origin.hostname | quote }}
     http:
       paths:
       - path: "/"

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name | quote }}
+data:
+  KELLNR_SETUP__ADMIN_PWD: {{ .Values.kellnr.setup.adminPwd | quote }}
+  KELLNR_SETUP__ADMIN_TOKEN: {{ .Values.kellnr.setup.adminToken | quote }}
+  KELLNR_REGISTRY__DATA_DIR: {{ .Values.kellnr.registry.dataDir | quote }}
+  KELLNR_REGISTRY__SESSION_AGE_SECONDS: {{ .Values.kellnr.registry.sessionAgeSeconds | quote }}
+  KELLNR_REGISTRY__CACHE_SIZE: {{ .Values.kellnr.registry.cacheSize | quote }}
+  KELLNR_REGISTRY__MAX_CRATE_SIZE: {{ .Values.kellnr.registry.maxCrateSize | quote }}
+  KELLNR_REGISTRY__AUTH_REQUIRED: {{ .Values.kellnr.registry.authRequired | quote }}
+  KELLNR_DOCS__ENABLED: {{ .Values.kellnr.docs.enabled | quote }}
+  KELLNR_DOCS__MAX_SIZE: {{ .Values.kellnr.docs.maxSize | quote }}
+  KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}
+  KELLNR_PROXY__NUM_THREADS: {{ .Values.kellnr.proxy.numThreads | quote }}
+  KELLNR_LOG__LEVEL: {{ .Values.kellnr.log.level | quote }}
+  KELLNR_LOG__FORMAT: {{ .Values.kellnr.log.format | quote }}
+  KELLNR_LOG__LEVEL_WEB_SERVER: {{ .Values.kellnr.log.levelWebServer | quote }}
+  KELLNR_LOCAL__IP: {{ .Values.kellnr.local.ip | quote }}
+  KELLNR_LOCAL__PORT: {{ .Values.kellnr.local.port | quote }}
+  KELLNR_ORIGIN__HOSTNAME: {{ required "A valid hostname, where Kellnr will be reachable is required." .Values.kellnr.origin.hostname | quote }}
+  KELLNR_ORIGIN__PORT: {{ .Values.kellnr.origin.port | quote }}
+  KELLNR_ORIGIN__PROTOCOL: {{ .Values.kellnr.origin.protocol | quote }}
+  KELLNR_POSTGRES__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}
+  KELLNR_POSTGRES__ADDRESS: {{ .Values.kellnr.postgres.address | quote }}
+  KELLNR_POSTGRES__PORT: {{ .Values.kellnr.postgres.port | quote }}
+  KELLNR_POSTGRES__USER: {{ .Values.kellnr.postgres.user | quote }} 
+  KELLNR_POSTGRES__PWD: {{ .Values.kellnr.postgres.pwd | quote }}
+  
