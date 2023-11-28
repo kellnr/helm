@@ -33,8 +33,8 @@ spec:
           configMap:
             name: {{ .Values.importCert.configMapName | quote }}
         {{- end }}
-      
-      {{- if .Values.dns.enabled }}
+     
+        {{- if .Values.dns.enabled }}
       dnsPolicy: {{ .Values.dns.dnsPolicy | quote }}
       dnsConfig:
         nameservers:
@@ -57,63 +57,27 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          {{- if eq .Values.kellnr.logLevel "debug" }}
+          {{- if eq .Values.kellnr.log.level "debug" }}
           - name: RUST_BACKTRACE
             value: "1"
           {{- end }}
-          - name: KELLNR_API_ADDRESS
-            value: {{ required "A valid API address, where Kellnr will be reachable is required." .Values.kellnr.apiAddress | quote }}
-          - name: KELLNR_API_PROTOCOL
-            value: {{ .Values.kellnr.apiProtocol | quote }}
-          - name: KELLNR_API_PORT
-            value: {{ .Values.service.api.port | quote }}
-          - name: KELLNR_API_PORT_PROXY
-            value: {{ .Values.service.api.port_proxy | quote }}
-          - name: KELLNR_INDEX_PORT
-            value: {{ .Values.service.index.port | quote }}
-          - name: KELLNR_ADMIN_PWD
-            value: {{ .Values.kellnr.adminPwd | quote }}
-          - name: KELLNR_ADMIN_TOKEN
-            value: {{ .Values.kellnr.adminToken | quote }}
-          - name: KELLNR_CRATES_IO_PROXY
-            value: {{ .Values.kellnr.cratesIoProxy | quote }}
-          - name: KELLNR_LOG_LEVEL
-            value: {{ .Values.kellnr.logLevel | quote }}
-          - name: KELLNR_LOG_LEVEL_ROCKET
-            value: {{ .Values.kellnr.logLevelRocket | quote }}
-          - name: KELLNR_LOG_FORMAT
-            value: {{ .Values.kellnr.logFormat | quote }}
-          - name: KELLNR_RUSTDOC_AUTO_GEN
-            value: {{ .Values.kellnr.rustdocAutoGen | quote }}
-          - name: KELLNR_CACHE_SIZE
-            value: {{ .Values.kellnr.cacheSize | quote }}
-          - name: KELLNR_MAX_CRATE_SIZE
-            value: {{ .Values.kellnr.maxCrateSize | quote }}
-          - name: KELLNR_MAX_DOCS_SIZE
-            value: {{ .Values.kellnr.maxDocsSize | quote }}
-          - name: KELLNR_CRATES_IO_NUM_THREADS
-            value: {{ .Values.kellnr.cratesIoNumThreads | quote }}
-          - name: KELLNR_GIT_INDEX
-            value: {{ .Values.kellnr.gitIndex | quote }}
-          - name: KELLNR_AUTH_REQUIRED
-            value: {{ .Values.kellnr.authRequired | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMap.name | quote }}
           ports:
             - containerPort: {{ .Values.service.api.port }}
               name: kellnr-api
-              protocol: TCP
-            - containerPort: {{ .Values.service.index.port  }}
-              name: kellnr-git
               protocol: TCP
           {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
           volumeMounts:
           {{- end }}
             {{- if .Values.pvc.enabled }}
-            - mountPath: "/opt/kdata"
+            - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
               name: {{ .Values.deployment.volumes.name }}
             {{- end }}
             {{- if .Values.importCert.enabled }}
             - name: {{ .Values.importCert.volumeName }}
-              mountPath: "/opt/kdata/cert"
+              mountPath: "{{ .Values.kellnr.registry.dataDir }}/cert"
               readOnly: true
             {{- end }}
           resources:
