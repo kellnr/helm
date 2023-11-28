@@ -19,7 +19,7 @@ For a list of possible configuration flags see below: [Configuration](#configura
 To install a minimal _Kellnr_ installation with in-memory storage run the command below. The in-memory storage variant is useful for testing but not recommended for production as all data (crates, users, ...) will be lost if the container restarts.
 
 ```bash
-helm install kellnr kellnr/kellnr --set kellnr.apiAddress="kellnr.example.com"
+helm install kellnr kellnr/kellnr --set kellnr.origin.hostname="kellnr.example.com"
 ```
 
 For a persistent _Kellnr_ instance, a _PersistentVolumeClaim_ (PVC) is needed. The helm chart can create a _PersistentVolumeClaim_ and _PersistentVolume_ (PV), if you don't have one already.
@@ -29,7 +29,7 @@ For a persistent _Kellnr_ instance, a _PersistentVolumeClaim_ (PVC) is needed. T
 # The storage class can be overwritten with "pvc.storageClassName" and defaults to "manual".
 helm install kellnr kellnr/kellnr \
     --set pvc.enabled=true --set pvc.name="storage_name" \
-    --set kellnr.apiAddress="kellnr.example.com"
+    --set kellnr.origin.hostname="kellnr.example.com"
 ```
 
 ```bash
@@ -37,7 +37,7 @@ helm install kellnr kellnr/kellnr \
 helm install kellnr kellnr/kellnr \
     --set pv.enabled=true --set pv.path="/mnt/kellnr" \
     --set pvc.enabled=true \
-    --set kellnr.apiAddress="kellnr.example.com"
+    --set kellnr.origin.hostname="kellnr.example.com"
 ```
 
 For information about the _Cargo_ setup and default values, see the official [Kellnr documentation](https://kellnr.io/documentation).
@@ -58,27 +58,9 @@ helm upgrade kellnr kellnr/kellnr
 
 All settings can be set with the `--set name=value` flag on `helm install`. Some settings are required and have to be provided other are recommended for security reasons.
 
-### Basics
+### Kellnr
 
-Basic settings to configure _Kellnr_.
-
-| Setting           | Required    | Description                                                                                   | Default                          |
-| ----------------- | ----------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
-| kellnr.apiAddress | Yes         | Address (IP or hostname) where _Kellnr_ is reachable                                          |                                  |
-| kellnr.adminPwd   | Recommended | Password of the admin user used by the web-ui. The password can be changed anytime in the UI. | kellnr                           |
-| kellnr.adminToken | Recommended | Token used by Cargo for the admin user. The token can be changed anytime in the UI.           | Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD |
-| kellnr.apiProtocol | No         | Protocol where _Kellnr_ is reachable. Either _http_ or _https_.                              | http                            |
-| kellnr.logLevel      | No          | Set the log level. Has to be one of _trace_, _debug_, _info_, _warn_, _error_.| info                            |
-| kellnr.logLevelRocket      | No          | Set the log level for the Rocket web framework. Has to be one of _trace_, _debug_, _info_, _warn_, _error_.| warn                            |
-| kellnr.logFormat     | No          | Set the log format. Has to be one of _compact_, _pretty_, _json_ | compact                            |
-|kellnr.cratesIoProxy| No | Enable [crates.io](https://crates.io/) proxy mode to cache crates in _Kellnr_. The crates.io index takes ~10GB of storage + storage for all cached crates.| false |
-|kellnr.cratesIoNumThreads | No | Number of threads used to update the crates.io index. | 10 |
-|kellnr.rustdocAutoGen| No | Enable automatic _rustdoc_ generation for uploaded _crates_. | true |
-|kellnr.cacheSize | No | Number of crates cached in-memory to decrease disk I/O. If set to `0` the cache is disabled. | 1000 |
-|kellnr.maxCrateSize | No | Max. allowed upload size for crates in MB. | 100 |
-|kellnr.maxDocsSize | No | Max. allowed upload size for crate docs in MB. | 100 |
-|kellnr.gitIndex | No | Enable or disable the git index. Needed for cargo < 1.7.0. Recommended to disable if you use an up to date cargo version. | true |
-|kellnr.authRequired | No | Enable or disable authentication on pull. | false |
+Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values. 
 
 ### Service
 
@@ -88,10 +70,6 @@ Settings to configure the web-ui/API endpoint service and the crate index servic
 | ---------------------- | -------- | ------------------------------------------------------------- | --------- |
 | service.api.type       | No       | Type of the service that exports the API and web-ui endpoint. | ClusterIP |
 | service.api.port       | No       | Port of the service that exports the API and web-ui endpoint. | 80        |
-| service.api.port_proxy | No       | If a proxy is used in front of Kellnr, specify the port of the proxy here. If no proxy is used, set to `service.api.port` value. | 80        |
-| service.index.type     | No       | Type of the service that exports the crate index.             | NodePort  |
-| service.index.port     | No       | Internal port of the service that exports the crate index.    | 9418      |
-| service.index.nodePort | No       | External port of the service that exports the crate index.    | 30418     |
 
 ### Ingress
 
