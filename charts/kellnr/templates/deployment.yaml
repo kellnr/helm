@@ -68,6 +68,11 @@ spec:
           - name: RUST_BACKTRACE
             value: "1"
           {{- end }}
+          {{- if .Values.kellnr.postgres.enabled }}
+          - name: KELLNR_POSTGRES__PWD
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.postgres.pwdSecretRef | nindent 16 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.configMap.name | quote }}
