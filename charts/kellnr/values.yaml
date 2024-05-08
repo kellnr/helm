@@ -86,6 +86,9 @@ kellnr:
     db: "kellnr"
     user: ""
     pwd: ""
+    pwdSecretRef:
+      name: kellnr-postgres-user
+      key: password
 
 service:
   api:
