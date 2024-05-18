@@ -40,6 +40,10 @@ spec:
           configMap:
             name: {{ .Values.importCert.configMapName | quote }}
         {{- end }}
+        - name: certs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
      
         {{- if .Values.dns.enabled }}
       dnsPolicy: {{ .Values.dns.dnsPolicy | quote }}
@@ -92,6 +96,10 @@ spec:
               mountPath: "{{ .Values.kellnr.registry.dataDir }}/cert"
               readOnly: true
             {{- end }}
+            - mountPath: /etc/ssl/certs
+              name: certs
+            - mountPath: /tmp
+              name: tmp
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
