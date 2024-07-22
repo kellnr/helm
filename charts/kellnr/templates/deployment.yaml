@@ -93,7 +93,7 @@ spec:
             {{- end }}
             {{- if .Values.importCert.enabled }}
             - name: {{ .Values.importCert.volumeName }}
-              mountPath: "{{ .Values.kellnr.registry.dataDir }}/cert"
+              mountPath: "/usr/local/share/ca-certificates/"
               readOnly: true
             {{- end }}
             - mountPath: /etc/ssl/certs
