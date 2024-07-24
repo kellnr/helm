@@ -90,6 +90,7 @@ spec:
             {{- if .Values.pvc.enabled }}
             - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
               name: {{ .Values.deployment.volumes.name }}
+              readOnly: false
             {{- end }}
             {{- if .Values.importCert.enabled }}
             - name: {{ .Values.importCert.volumeName }}

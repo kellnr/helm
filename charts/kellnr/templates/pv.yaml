@@ -10,7 +10,7 @@ spec:
   capacity:
     storage: {{ .Values.pv.storage | quote }}
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   hostPath:
     path: {{ required "Existing host path required." .Values.pv.path | quote }} # Needs to exists before PV creation!
   persistentVolumeReclaimPolicy: Retain
