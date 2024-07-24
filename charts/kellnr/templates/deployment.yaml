@@ -44,6 +44,8 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+        - name: opt
+          emptyDir: {}
      
         {{- if .Values.dns.enabled }}
       dnsPolicy: {{ .Values.dns.dnsPolicy | quote }}
@@ -101,6 +103,8 @@ spec:
               name: certs
             - mountPath: /tmp
               name: tmp
+            - mountPath: /opt/kdata
+              name: opt
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

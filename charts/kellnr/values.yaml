@@ -42,6 +42,7 @@ securityContext:
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
+  fsGroupChangePolicy: "OnRootMismatch"
 
 deployment:
   volumes:
