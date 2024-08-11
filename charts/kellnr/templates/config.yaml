@@ -22,8 +22,8 @@ data:
   KELLNR_ORIGIN__HOSTNAME: {{ required "A valid hostname, where Kellnr will be reachable is required." .Values.kellnr.origin.hostname | quote }}
   KELLNR_ORIGIN__PORT: {{ .Values.kellnr.origin.port | quote }}
   KELLNR_ORIGIN__PROTOCOL: {{ .Values.kellnr.origin.protocol | quote }}
-  KELLNR_POSTGRES__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}
-  KELLNR_POSTGRES__ADDRESS: {{ .Values.kellnr.postgres.address | quote }}
-  KELLNR_POSTGRES__PORT: {{ .Values.kellnr.postgres.port | quote }}
-  KELLNR_POSTGRES__USER: {{ .Values.kellnr.postgres.user | quote }} 
-  
+  KELLNR_POSTGRESQL__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}
+  KELLNR_POSTGRESQL__ADDRESS: {{ .Values.kellnr.postgres.address | quote }}
+  KELLNR_POSTGRESQL__PORT: {{ .Values.kellnr.postgres.port | quote }}
+  KELLNR_POSTGRESQL__USER: {{ .Values.kellnr.postgres.user | quote }}
+
