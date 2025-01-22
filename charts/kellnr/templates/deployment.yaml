@@ -29,7 +29,6 @@ spec:
     spec:
       {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
       volumes:
-      {{- end }}
         {{- if .Values.pvc.enabled }}
         - name: {{ .Values.deployment.volumes.name }}
           persistentVolumeClaim:
@@ -44,6 +43,7 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
+      {{- end }}
       {{- if .Values.dns.enabled }}
       dnsPolicy: {{ .Values.dns.dnsPolicy | quote }}
       dnsConfig:
