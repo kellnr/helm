@@ -85,7 +85,6 @@ spec:
               protocol: TCP
           {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
           volumeMounts:
-          {{- end }}
             {{- if .Values.pvc.enabled }}
             - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
               name: {{ .Values.deployment.volumes.name }}
@@ -100,6 +99,7 @@ spec:
               name: certs
             - mountPath: /tmp
               name: tmp
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
