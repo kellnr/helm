@@ -39,7 +39,6 @@ securityContext:
   capabilities:
     drop:
       - ALL
-  readOnlyRootFilesystem: true
 
 deployment:
   volumes:
