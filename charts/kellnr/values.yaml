@@ -73,7 +73,7 @@ kellnr:
     ip: "0.0.0.0"
     port: 80
   origin:
-    hostname: "127.0.0.1"
+    hostname: "localhost"
     port: 80
     protocol: "http"
   postgres:
