@@ -85,6 +85,13 @@ kellnr:
     pwdSecretRef:
       name: kellnr-postgres-user
       key: password
+  s3:
+    enabled: false
+    accessKey: ""
+    secretKey: ""
+    region: ""
+    endpoint: ""
+    allowHttp: true
 
 service:
   api:
