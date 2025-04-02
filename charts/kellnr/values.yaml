@@ -92,6 +92,8 @@ kellnr:
     region: ""
     endpoint: ""
     allowHttp: true
+    crates_bucket: "kellnr-crates"
+    cratesio_bucket: "kellnr-cratesio"
 
 service:
   api:
