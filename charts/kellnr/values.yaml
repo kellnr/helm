@@ -40,11 +40,6 @@ securityContext:
     drop:
       - ALL
 
-deployment:
-  volumes:
-    name: "kellnr-storage"
-    persistentVolumeClaim: "kellnr"
-
 configMap:
   name: "kellnr-config"
 
@@ -109,6 +104,7 @@ pv:
 
 pvc:
   enabled: false
+  useExistingClaim: false
   name: "kellnr"
   storageClassName: "manual"
   storage: 5Gi

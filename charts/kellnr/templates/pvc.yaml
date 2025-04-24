@@ -1,3 +1,4 @@
+{{- if not .Values.pvc.useExistingClaim -}}
 {{- if .Values.pvc.enabled -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -10,4 +11,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.pvc.storage }}
+{{- end }}
 {{- end }}
