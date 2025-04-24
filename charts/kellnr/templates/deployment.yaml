@@ -30,9 +30,9 @@ spec:
       {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
       volumes:
         {{- if .Values.pvc.enabled }}
-        - name: {{ .Values.deployment.volumes.name }}
+        - name: kellnr-storage
           persistentVolumeClaim:
-            claimName: {{ .Values.deployment.volumes.persistentVolumeClaim }}
+            claimName: {{ .Values.pvc.name }}
         {{- end }}
         {{- if .Values.importCert.enabled }}
         - name: {{ .Values.importCert.volumeName | quote }}
@@ -87,7 +87,7 @@ spec:
           volumeMounts:
             {{- if .Values.pvc.enabled }}
             - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
-              name: {{ .Values.deployment.volumes.name }}
+              name: kellnr-storage
               readOnly: false
             {{- end }}
             {{- if .Values.importCert.enabled }}

@@ -25,6 +25,13 @@ helm install kellnr kellnr/kellnr --set kellnr.origin.hostname="kellnr.example.c
 For a persistent _Kellnr_ instance, a _PersistentVolumeClaim_ (PVC) is needed. The helm chart can create a _PersistentVolumeClaim_ and _PersistentVolume_ (PV), if you don't have one already.
 
 ```bash
+# Use an existing PersistentStorageClaim.
+helm install kellnr kellnr/kellnr \
+    --set pvc.enabled=true --set pvc.useExistingClaim=true \
+    --set pvc.name="storage_name"
+```
+
+```bash
 # Use an existing PersistentStorage (storage_name) to get a PersistentStorageClaim.
 # The storage class can be overwritten with "pvc.storageClassName" and defaults to "manual".
 helm install kellnr kellnr/kellnr \
@@ -60,7 +67,7 @@ All settings can be set with the `--set name=value` flag on `helm install`. Some
 
 ### Kellnr
 
-Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values. 
+Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values.
 
 ### Service
 
