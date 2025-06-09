@@ -9,6 +9,7 @@ spec:
   ports:
     - name: kellnr-api
       port: {{ .Values.service.api.port }}
+      targetPort: kellnr-api
       protocol: TCP
   selector:
     {{- include "kellnr.selectorLabels" . | nindent 4 }}
