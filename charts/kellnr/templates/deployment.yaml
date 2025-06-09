@@ -20,8 +20,10 @@ spec:
       {{- include "kellnr.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+      {{- /* This annotation is used to trigger a rolling update when the config changes */}}
+        configHash: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
