@@ -66,26 +66,26 @@ Check the [documentation](https://kellnr.io/documentation) and the [values.yaml]
 
 Settings to configure the web-ui/API endpoint service and the crate index service.
 
-| Setting                | Required | Description                                                   | Default   |
-| ---------------------- | -------- | ------------------------------------------------------------- | --------- |
-| service.api.type       | No       | Type of the service that exports the API and web-ui endpoint. | ClusterIP |
-| service.api.port       | No       | Port of the service that exports the API and web-ui endpoint. | 80        |
+| Setting          | Required | Description                                                   | Default   |
+|------------------|----------|---------------------------------------------------------------|-----------|
+| service.api.type | No       | Type of the service that exports the API and web-ui endpoint. | ClusterIP |
+| service.api.port | No       | Port of the service that exports the API and web-ui endpoint. | 80        |
 
 ### Ingress
 
 Setting to configure the ingress route for the web-ui and API.
 
-| Setting             | Required | Description                                      | Default |
-| ------------------- | -------- | ------------------------------------------------ | ------- |
-| ingress.enabled     | No       | Enable an Kubernetes ingress route for _Kellnr_. | true    |
-| ingress.className   | No       | Set an ingress className.                        | ""      |
-| ingress.annotations | No       | Set ingress annotations.                         | {}      |
-| ingress.tls.secretName | No   | Set the secret name for a TLS certificate         | kellnr-cert-secret |
+| Setting                | Required | Description                                      | Default            |
+|------------------------|----------|--------------------------------------------------|--------------------|
+| ingress.enabled        | No       | Enable an Kubernetes ingress route for _Kellnr_. | true               |
+| ingress.className      | No       | Set an ingress className.                        | ""                 |
+| ingress.annotations    | No       | Set ingress annotations.                         | {}                 |
+| ingress.tls.secretName | No       | Set the secret name for a TLS certificate        | kellnr-cert-secret |
 
 ### TLS Certificate
 
 Settings to configure a TLS certificate with cert-manager. **Important** If you use _Kellnr_ with TLS,
-make sure to set `kellnr.apiProtocol` to `https`.
+make sure to set `kellnr.origin.protocol` to `https`.
 
 | Setting | Required | Description | Default |
 | ---------------------- | -------- | ------------------------------------------------------------- | --------- |
@@ -134,12 +134,12 @@ You can set DNS servers for _Kellnr_ which should be used instead of the default
 
 > Kellnr needs to be able to resolve it's own domain name, to be able to generate Rustdocs automatically.
 
-| Setting | Required | Description | Default |
-| ---------------------- | -------- | ------------------------------------------------------------- | --------- |
-| dns.enabled | No | Enable an additional _dnsPolicy_ | false |
-| dns.dnsPolicy | No | Set the _dnsPolicy_ | "None" |
-| dns.dnsConfig.nameservers | No | List of nameservers to use. | - "" |
-| dns.dnsConfig.searches | No | List of searches to use. | - "" |
+| Setting                   | Required | Description                      | Default |
+|---------------------------|----------|----------------------------------|---------|
+| dns.enabled               | No       | Enable an additional _dnsPolicy_ | false   |
+| dns.dnsPolicy             | No       | Set the _dnsPolicy_              | "None"  |
+| dns.dnsConfig.nameservers | No       | List of nameservers to use.      | - ""    |
+| dns.dnsConfig.searches    | No       | List of searches to use.         | - ""    |
 
 ### Persistence
 

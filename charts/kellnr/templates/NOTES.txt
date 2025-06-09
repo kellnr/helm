@@ -3,6 +3,6 @@ Thank you for installing {{ .Chart.Name }}.
 Installed Chart version: {{ .Chart.Version }}
 Installed Kellnr version: {{ .Chart.AppVersion }}
 
-  - Web UI & API Endpoint: "{{ .Values.kellnr.origin.protocol }}://{{ .Values.kellnr.origin.hostname }}:{{ .Values.kellnr.origin.port }}"
+  - Web UI & API Endpoint: "{{ .Values.kellnr.origin.protocol }}://{{ .Values.kellnr.origin.hostname }}:{{ include "kellnr.serviceOriginPort" . }}"
 
 For documentation on how to configure Cargo to use Kellnr, see: https://kellnr.io/documentation

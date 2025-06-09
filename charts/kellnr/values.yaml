@@ -73,7 +73,8 @@ kellnr:
     port: 80
   origin:
     hostname: "localhost"
-    port: 80
+    # Can be a number, or null (~) to automatically set to 443 if protocol is https, otherwise 80
+    port: null
     protocol: "http"
   postgres:
     enabled: false
