@@ -98,7 +98,7 @@ kellnr:
 service:
   api:
     type: ClusterIP
-    port: 80
+    port: 8000
 
 pv:
   enabled: false

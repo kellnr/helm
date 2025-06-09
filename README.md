@@ -69,7 +69,7 @@ Settings to configure the web-ui/API endpoint service and the crate index servic
 | Setting          | Required | Description                                                   | Default   |
 |------------------|----------|---------------------------------------------------------------|-----------|
 | service.api.type | No       | Type of the service that exports the API and web-ui endpoint. | ClusterIP |
-| service.api.port | No       | Port of the service that exports the API and web-ui endpoint. | 80        |
+| service.api.port | No       | Port of the service that exports the API and web-ui endpoint. | 8000      |
 
 ### Ingress
 
