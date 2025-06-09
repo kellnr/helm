@@ -18,7 +18,7 @@ data:
   KELLNR_LOG__FORMAT: {{ .Values.kellnr.log.format | quote }}
   KELLNR_LOG__LEVEL_WEB_SERVER: {{ .Values.kellnr.log.levelWebServer | quote }}
   KELLNR_LOCAL__IP: {{ .Values.kellnr.local.ip | quote }}
-  KELLNR_LOCAL__PORT: {{ .Values.kellnr.local.port | quote }}
+  KELLNR_LOCAL__PORT: {{ .Values.service.api.port | quote }}
   KELLNR_ORIGIN__HOSTNAME: {{ required "A valid hostname, where Kellnr will be reachable is required." .Values.kellnr.origin.hostname | quote }}
   KELLNR_ORIGIN__PORT: {{ .Values.kellnr.origin.port | quote }}
   KELLNR_ORIGIN__PROTOCOL: {{ .Values.kellnr.origin.protocol | quote }}
