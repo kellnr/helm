@@ -20,7 +20,7 @@ data:
   KELLNR_LOCAL__IP: {{ .Values.kellnr.local.ip | quote }}
   KELLNR_LOCAL__PORT: {{ .Values.service.api.port | quote }}
   KELLNR_ORIGIN__HOSTNAME: {{ required "A valid hostname, where Kellnr will be reachable is required." .Values.kellnr.origin.hostname | quote }}
-  KELLNR_ORIGIN__PORT: {{ .Values.kellnr.origin.port | quote }}
+  KELLNR_ORIGIN__PORT: {{ include "kellnr.serviceOriginPort" . | quote }}
   KELLNR_ORIGIN__PROTOCOL: {{ .Values.kellnr.origin.protocol | quote }}
   KELLNR_POSTGRESQL__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}
   KELLNR_POSTGRESQL__ADDRESS: {{ .Values.kellnr.postgres.address | quote }}

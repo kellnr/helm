@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Decide the proxy port number to use if set to auto
+*/}}
+{{- define "kellnr.serviceOriginPort" -}}
+{{- if eq .Values.kellnr.origin.protocol "https" }}
+{{- default 443 .Values.kellnr.origin.port }}
+{{- else }}
+{{- default 80 .Values.kellnr.origin.port }}
+{{- end }}
+{{- end }}
