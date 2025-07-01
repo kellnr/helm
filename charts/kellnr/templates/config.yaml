@@ -26,7 +26,6 @@ data:
   KELLNR_POSTGRESQL__ADDRESS: {{ .Values.kellnr.postgres.address | quote }}
   KELLNR_POSTGRESQL__PORT: {{ .Values.kellnr.postgres.port | quote }}
   KELLNR_POSTGRESQL__USER: {{ .Values.kellnr.postgres.user | quote }}
-  KELLNR_POSTGRESQL__PWD: {{ .Values.kellnr.postgres.pwd | quote }}
   KELLNR_POSTGRESQL__DB: {{ .Values.kellnr.postgres.db | quote }}
   KELLNR_S3__ENABLED: {{ .Values.kellnr.s3.enabled | quote }}
   KELLNR_S3__ACCESS_KEY: {{ .Values.kellnr.s3.accessKey | quote }}
