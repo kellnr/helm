@@ -64,6 +64,7 @@ kellnr:
   proxy:
     enabled: false
     numThreads: 20
+    downloadOnUpdate: false
   log:
     level: "info"
     format: "compact"

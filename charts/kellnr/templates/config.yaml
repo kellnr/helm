@@ -14,6 +14,7 @@ data:
   KELLNR_DOCS__MAX_SIZE: {{ .Values.kellnr.docs.maxSize | quote }}
   KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}
   KELLNR_PROXY__NUM_THREADS: {{ .Values.kellnr.proxy.numThreads | quote }}
+  KELLNR_PROXY__DOWNLOAD_ON_UPDATE: {{ .Values.kellnr.proxy.downloadOnUpdate | quote }}
   KELLNR_LOG__LEVEL: {{ .Values.kellnr.log.level | quote }}
   KELLNR_LOG__FORMAT: {{ .Values.kellnr.log.format | quote }}
   KELLNR_LOG__LEVEL_WEB_SERVER: {{ .Values.kellnr.log.levelWebServer | quote }}
