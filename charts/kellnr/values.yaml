@@ -69,10 +69,10 @@ kellnr:
     maxCrateSize: 10
     authRequired: "false"
   docs:
-    enabled: "false"
+    enabled: false
     maxSize: 100
   proxy:
-    enabled: "false"
+    enabled: false
     numThreads: 20
     downloadOnUpdate: "false"
   log:
@@ -87,7 +87,7 @@ kellnr:
     port: null
     protocol: "http"
   postgres:
-    enabled: "false"
+    enabled: false
     address: "localhost"
     port: 5432
     db: "kellnr"
@@ -97,7 +97,7 @@ kellnr:
       name: kellnr-postgres-user
       key: password
   s3:
-    enabled: "false"
+    enabled: false
     accessKey: ""
     secretKey: ""
     region: ""
