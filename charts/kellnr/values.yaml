@@ -67,14 +67,14 @@ kellnr:
     sessionAgeSeconds: 28800
     cacheSize: 1000
     maxCrateSize: 10
-    authRequired: "false"
+    authRequired: false
   docs:
     enabled: false
     maxSize: 100
   proxy:
     enabled: false
     numThreads: 20
-    downloadOnUpdate: "false"
+    downloadOnUpdate: false
   log:
     level: "info"
     format: "compact"
@@ -102,7 +102,7 @@ kellnr:
     secretKey: ""
     region: ""
     endpoint: ""
-    allowHttp: "true"
+    allowHttp: true
     crates_bucket: "kellnr-crates"
     cratesio_bucket: "kellnr-cratesio"
 
