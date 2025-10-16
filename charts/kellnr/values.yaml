@@ -48,6 +48,12 @@ deployment:
 configMap:
   name: "kellnr-config"
 
+secret:
+  # Set enabled to true to use a Secret instead of ConfigMap
+  # This allows you to encrypt the configuration with tools like SOPS
+  enabled: false
+  name: "kellnr-secret"
+
 kellnr:
   setup:
     adminPwd: "admin"

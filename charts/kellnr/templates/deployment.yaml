@@ -22,7 +22,11 @@ spec:
     metadata:
       annotations:
       {{- /* This annotation is used to trigger a rolling update when the config changes */}}
+        {{- if .Values.secret.enabled }}
+        secretHash: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
+        {{- else }}
         configHash: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- end }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -79,8 +83,13 @@ spec:
               secretKeyRef: {{ toYaml .Values.kellnr.postgres.pwdSecretRef | nindent 16 }}
           {{- end }}
           envFrom:
+            {{- if .Values.secret.enabled }}
+            - secretRef:
+                name: {{ .Values.secret.name | quote }}
+            {{- else }}
             - configMapRef:
                 name: {{ .Values.configMap.name | quote }}
+            {{- end }}
           ports:
             - containerPort: {{ .Values.service.api.port }}
               name: kellnr-api
