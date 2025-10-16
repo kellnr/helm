@@ -52,6 +52,10 @@ secret:
   # Set enabled to true to use a Secret instead of ConfigMap
   # This allows you to encrypt the configuration with tools like SOPS
   enabled: false
+  # Set useExisting to true to reference an existing secret instead of generating one
+  # When useExisting is true, you must create a secret with the name specified below
+  # containing all the required Kellnr environment variables
+  useExisting: false
   name: "kellnr-secret"
 
 kellnr:

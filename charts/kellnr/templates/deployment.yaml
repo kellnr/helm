@@ -22,9 +22,9 @@ spec:
     metadata:
       annotations:
       {{- /* This annotation is used to trigger a rolling update when the config changes */}}
-        {{- if .Values.secret.enabled }}
+        {{- if and .Values.secret.enabled (not .Values.secret.useExisting) }}
         secretHash: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
-        {{- else }}
+        {{- else if not .Values.secret.enabled }}
         configHash: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         {{- end }}
       {{- with .Values.podAnnotations }}
