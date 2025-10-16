@@ -67,14 +67,14 @@ kellnr:
     sessionAgeSeconds: 28800
     cacheSize: 1000
     maxCrateSize: 10
-    authRequired: false
+    authRequired: "false"
   docs:
-    enabled: false
+    enabled: "false"
     maxSize: 100
   proxy:
-    enabled: false
+    enabled: "false"
     numThreads: 20
-    downloadOnUpdate: false
+    downloadOnUpdate: "false"
   log:
     level: "info"
     format: "compact"
@@ -87,7 +87,7 @@ kellnr:
     port: null
     protocol: "http"
   postgres:
-    enabled: false
+    enabled: "false"
     address: "localhost"
     port: 5432
     db: "kellnr"
@@ -97,12 +97,12 @@ kellnr:
       name: kellnr-postgres-user
       key: password
   s3:
-    enabled: false
+    enabled: "false"
     accessKey: ""
     secretKey: ""
     region: ""
     endpoint: ""
-    allowHttp: true
+    allowHttp: "true"
     crates_bucket: "kellnr-crates"
     cratesio_bucket: "kellnr-cratesio"
 
