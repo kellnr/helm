@@ -48,6 +48,16 @@ deployment:
 configMap:
   name: "kellnr-config"
 
+secret:
+  # Set enabled to true to use a Secret instead of ConfigMap
+  # This allows you to encrypt the configuration with tools like SOPS
+  enabled: false
+  # Set useExisting to true to reference an existing secret instead of generating one
+  # When useExisting is true, you must create a secret with the name specified below
+  # containing all the required Kellnr environment variables
+  useExisting: false
+  name: "kellnr-secret"
+
 kellnr:
   setup:
     adminPwd: "admin"
@@ -121,6 +131,26 @@ ingress:
   pathType: Prefix
   tls:
     secretName: "kellnr-cert-secret"
+
+httproute:
+  enabled: false
+  annotations: {}
+  # Reference to the Gateway(s) that this HTTPRoute should attach to
+  parentRefs:
+    - name: ""
+      namespace: ""
+  # Override hostnames (defaults to kellnr.origin.hostname if not set)
+  hostnames: []
+  path: "/"
+  pathType: "PathPrefix"
+  # Optional: filters for request/response modification
+  filters: []
+  # Example filters:
+  # - type: RequestHeaderModifier
+  #   requestHeaderModifier:
+  #     add:
+  #       - name: X-Custom-Header
+  #         value: custom-value
 
 certificate:
   enabled: false
