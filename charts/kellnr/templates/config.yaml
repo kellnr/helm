@@ -9,7 +9,10 @@ data:
   KELLNR_REGISTRY__SESSION_AGE_SECONDS: {{ .Values.kellnr.registry.sessionAgeSeconds | quote }}
   KELLNR_REGISTRY__CACHE_SIZE: {{ .Values.kellnr.registry.cacheSize | quote }}
   KELLNR_REGISTRY__MAX_CRATE_SIZE: {{ .Values.kellnr.registry.maxCrateSize | quote }}
+  KELLNR_REGISTRY__MAX_DB_CONNECTIONS: {{ .Values.kellnr.registry.maxDbConnections | quote }}
   KELLNR_REGISTRY__AUTH_REQUIRED: {{ .Values.kellnr.registry.authRequired | quote }}
+  KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrateFields | quote }}
+  KELLNR_REGISTRY__NEW_CRATES_RESTRICTED: {{ .Values.kellnr.registry.newCratesRestricted | quote }}
   KELLNR_DOCS__ENABLED: {{ .Values.kellnr.docs.enabled | quote }}
   KELLNR_DOCS__MAX_SIZE: {{ .Values.kellnr.docs.maxSize | quote }}
   KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}

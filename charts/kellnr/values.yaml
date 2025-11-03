@@ -68,6 +68,9 @@ kellnr:
     cacheSize: 1000
     maxCrateSize: 10
     authRequired: false
+    requiredCrateFields: "" # Comma-separated list of fields, e.g. "description,license,repository"
+    newCratesRestricted: false
+    maxDbConnections: 0 # 0 means no limit
   docs:
     enabled: false
     maxSize: 100
