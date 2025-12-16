@@ -199,6 +199,10 @@ autoscaling:
     CPUUtilizationPercentage: 80
     # memoryUtilizationPercentage: 80
 
+pdb:
+  enabled: false
+  minAvailable: 1
+
 nodeSelector: {}
 
 tolerations: []
