@@ -30,8 +30,14 @@ jobs:
       - name: Install yq
         run: |
           set -euo pipefail
-          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
+          YQ_VERSION="v4.44.3"
+          cd /usr/local/bin
+          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -O yq_linux_amd64
+          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/checksums" -O yq_checksums
+          grep " yq_linux_amd64" yq_checksums | sha256sum -c -
+          sudo chmod +x yq_linux_amd64
+          sudo mv yq_linux_amd64 yq
+          rm yq_checksums
           yq --version
 
       - name: Update Chart.yaml (appVersion + bump chart version patch)
