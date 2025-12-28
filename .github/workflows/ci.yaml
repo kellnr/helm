@@ -52,7 +52,7 @@ jobs:
             exit 1
           fi
 
-          CURRENT_APP_VERSION="$(yq -r '.appVersion' "$CHART" | sed -E 's/^"|"$//g')"
+          CURRENT_APP_VERSION="$(yq -r '.appVersion' "$CHART")"
           if [ "$CURRENT_APP_VERSION" = "$NEW_APP_VERSION" ]; then
             echo "Chart appVersion already $NEW_APP_VERSION, nothing to do."
             exit 0
