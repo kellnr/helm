@@ -5,7 +5,85 @@ on:
   pull_request:
     branches:
       - main
+  repository_dispatch:
+    types:
+      - kellnr_release
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
+  update-chart-on-dispatch:
+    name: Update chart versions on kellnr release
+    if: github.event_name == 'repository_dispatch' && github.repository_owner == 'kellnr'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: v
+        run: |
+          echo "version=${{ github.event.client_payload.version }}" >> "$GITHUB_OUTPUT"
+
+      - name: Install yq
+        run: |
+          set -euo pipefail
+          YQ_VERSION="v4.44.3"
+          cd /usr/local/bin
+          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -O yq_linux_amd64
+          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/checksums" -O yq_checksums
+          grep " yq_linux_amd64" yq_checksums | sha256sum -c -
+          sudo chmod +x yq_linux_amd64
+          sudo mv yq_linux_amd64 yq
+          rm yq_checksums
+          yq --version
+
+      - name: Update Chart.yaml (appVersion + bump chart version patch)
+        run: |
+          set -euo pipefail
+
+          CHART="charts/kellnr/Chart.yaml"
+          NEW_APP_VERSION="${{ steps.v.outputs.version }}"
+
+          if [ -z "$NEW_APP_VERSION" ]; then
+            echo "Missing client_payload.version"
+            exit 1
+          fi
+
+          CURRENT_APP_VERSION="$(yq -r '.appVersion' "$CHART")"
+          if [ "$CURRENT_APP_VERSION" = "$NEW_APP_VERSION" ]; then
+            echo "Chart appVersion already $NEW_APP_VERSION, nothing to do."
+            exit 0
+          fi
+
+          CURRENT_CHART_VERSION="$(yq -r '.version' "$CHART")"
+          NEXT_CHART_VERSION="$(echo "$CURRENT_CHART_VERSION" | awk -F. '{printf "%d.%d.%d\n",$1,$2,$3+1}')"
+
+          yq -i ".appVersion = \"${NEW_APP_VERSION}\" | .version = \"${NEXT_CHART_VERSION}\"" "$CHART"
+
+          echo "Updated appVersion $CURRENT_APP_VERSION -> $NEW_APP_VERSION"
+          echo "Bumped chart version $CURRENT_CHART_VERSION -> $NEXT_CHART_VERSION"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/bump-kellnr-${{ steps.v.outputs.version }}
+          delete-branch: true
+          title: "chore(helm): bump Kellnr to ${{ steps.v.outputs.version }}"
+          commit-message: "chore(helm): bump Kellnr to ${{ steps.v.outputs.version }}"
+          body: |
+            Automated update from `repository_dispatch` event.
+
+            - `appVersion`: `${{ steps.v.outputs.version }}`
+            - `version`: bumped patch to publish a new chart package
+          labels: |
+            automation
+            dependencies
+          base: main
+
   release:
     if: github.ref == 'refs/heads/main' && github.repository_owner == 'kellnr'
     runs-on: ubuntu-latest
