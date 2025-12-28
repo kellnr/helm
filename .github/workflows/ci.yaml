@@ -31,13 +31,8 @@ jobs:
         run: |
           set -euo pipefail
           YQ_VERSION="v4.44.3"
-          cd /usr/local/bin
-          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -O yq_linux_amd64
-          sudo wget -q "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/checksums" -O yq_checksums
-          grep " yq_linux_amd64" yq_checksums | sha256sum -c -
-          sudo chmod +x yq_linux_amd64
-          sudo mv yq_linux_amd64 yq
-          rm yq_checksums
+          sudo wget -qO /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64"
+          sudo chmod +x /usr/local/bin/yq
           yq --version
 
       - name: Update Chart.yaml (appVersion + bump chart version patch)
@@ -85,11 +80,11 @@ jobs:
           base: main
 
   release:
-    if: github.ref == 'refs/heads/main' && github.repository_owner == 'kellnr'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'kellnr'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -99,9 +94,9 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v4
         with:
-          version: v3.4.0
+          version: v3.16.3
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
