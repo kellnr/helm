@@ -72,7 +72,8 @@ Kellnr uses a cookie signing key to sign its session cookie.
 
 Notes:
 
-- If `secret.enabled: true` and `kellnr.registry.cookieSigningKey` is empty, the chart will generate a random 64-character value and store it in the generated Secret.
+- If `secret.enabled: true` and `kellnr.registry.cookieSigningKey` is empty, the chart will **not** set `KELLNR_REGISTRY__COOKIE_SIGNING_KEY`.
+
 - If `secret.enabled: false` (ConfigMap mode), you should set `kellnr.registry.cookieSigningKey` explicitly (otherwise the env var is not set).
 
 Example:

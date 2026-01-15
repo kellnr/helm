@@ -74,8 +74,8 @@ Decide the proxy port number to use if set to auto
 
 {{/*
 Cookie signing key used by Kellnr.
-- If user provided a value, enforce min length (>= 64 bytes/chars).
-- Else generate a random 64-char value.
+- If user provided a value, enforce min length (>= 64 bytes/chars) and return it.
+- If not provided, return empty string so the env var can be omitted entirely.
 
 Note: Helm templates don't have a "bytes" unit here; we can only validate string length.
 */}}
@@ -87,7 +87,8 @@ Note: Helm templates don't have a "bytes" unit here; we can only validate string
   {{- end -}}
   {{- $key -}}
 {{- else -}}
-  {{- randAlphaNum 64 -}}
+  {{- "" -}}
 {{- end -}}
 {{- end }}
+
 
