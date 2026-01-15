@@ -60,7 +60,29 @@ All settings can be set with the `--set name=value` flag on `helm install`. Some
 
 ### Kellnr
 
-Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values. 
+Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values.
+
+#### Cookie signing key
+
+Kellnr uses a cookie signing key to sign its session cookie.
+
+| Setting                          | Required | Description                                                                                                       | Default |
+|----------------------------------|----------|-------------------------------------------------------------------------------------------------------------------|---------|
+| kellnr.registry.cookieSigningKey | No       | Cookie signing key used for `KELLNR_REGISTRY__COOKIE_SIGNING_KEY`. Must be at least 64 characters.               | ""     |
+
+Notes:
+
+- If `secret.enabled: true` and `kellnr.registry.cookieSigningKey` is empty, the chart will generate a random 64-character value and store it in the generated Secret.
+- If `secret.enabled: false` (ConfigMap mode), you should set `kellnr.registry.cookieSigningKey` explicitly (otherwise the env var is not set).
+
+Example:
+
+````yaml
+kellnr:
+  registry:
+    cookieSigningKey: "<at least 64 characters>"
+````
+
 
 ### Service
 
