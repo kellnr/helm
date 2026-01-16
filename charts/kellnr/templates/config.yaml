@@ -11,6 +11,12 @@ data:
   KELLNR_REGISTRY__MAX_CRATE_SIZE: {{ .Values.kellnr.registry.maxCrateSize | quote }}
   KELLNR_REGISTRY__MAX_DB_CONNECTIONS: {{ .Values.kellnr.registry.maxDbConnections | quote }}
   KELLNR_REGISTRY__AUTH_REQUIRED: {{ .Values.kellnr.registry.authRequired | quote }}
+  KELLNR_REGISTRY__ALLOW_OWNERLESS_CRATES: {{ .Values.kellnr.registry.allowOwnerlessCrates | quote }}
+  KELLNR_REGISTRY__TOKEN_CACHE_ENABLED: {{ .Values.kellnr.registry.token.cache.enabled | quote }}
+  KELLNR_REGISTRY__TOKEN_CACHE_TTL_SECONDS: {{ .Values.kellnr.registry.token.cache.ttlSeconds | quote }}
+  KELLNR_REGISTRY__TOKEN_CACHE_MAX_CAPACITY: {{ .Values.kellnr.registry.token.cache.maxCapacity | quote }}
+  KELLNR_REGISTRY__TOKEN_DB_RETRY_COUNT: {{ .Values.kellnr.registry.token.db.retryCount | quote }}
+  KELLNR_REGISTRY__TOKEN_DB_RETRY_DELAY_MS: {{ .Values.kellnr.registry.token.db.retryDelayMs | quote }}
 {{- if .Values.kellnr.registry.cookieSigningKey }}
   KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ .Values.kellnr.registry.cookieSigningKey | quote }}
 {{- end }}
