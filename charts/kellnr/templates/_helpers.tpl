@@ -71,3 +71,24 @@ Decide the proxy port number to use if set to auto
 {{- default 80 .Values.kellnr.origin.port }}
 {{- end }}
 {{- end }}
+
+{{/*
+Cookie signing key used by Kellnr.
+- If user provided a value, enforce min length (>= 64 bytes/chars) and return it.
+- If not provided, return empty string so the env var can be omitted entirely.
+
+Note: Helm templates don't have a "bytes" unit here; we can only validate string length.
+*/}}
+{{- define "kellnr.cookieSigningKey" -}}
+{{- $key := default "" .Values.kellnr.registry.cookieSigningKey -}}
+{{- if ne $key "" -}}
+  {{- if lt (len $key) 64 -}}
+    {{- fail "kellnr.registry.cookieSigningKey must be at least 64 characters" -}}
+  {{- end -}}
+  {{- $key -}}
+{{- else -}}
+  {{- "" -}}
+{{- end -}}
+{{- end }}
+
+
