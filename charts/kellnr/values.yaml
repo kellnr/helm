@@ -65,7 +65,7 @@ kellnr:
     adminPwd: "admin"
     adminToken: "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD"
   registry:
-    dataDir: "/opt/kdata"
+    dataDir: "/var/lib/kellnr"
     sessionAgeSeconds: 28800
     cacheSize: 1000
     maxCrateSize: 10
