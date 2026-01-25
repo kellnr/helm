@@ -54,6 +54,12 @@ helm repo update
 helm upgrade kellnr kellnr/kellnr
 ```
 
+### Upgrade Notes
+
+#### Chart version 5.0.0
+
+The default data directory changed from `/opt/kdata` to `/var/lib/kellnr` to align with the new Kellnr Docker image defaults. If you're upgrading an existing installation and were using the default data directory, explicitly set `kellnr.registry.dataDir=/opt/kdata` in your values to maintain compatibility with your existing persistent volume.
+
 ## Configuration
 
 All settings can be set with the `--set name=value` flag on `helm install`. Some settings are required and have to be provided other are recommended for security reasons.
