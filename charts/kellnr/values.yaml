@@ -129,6 +129,37 @@ kellnr:
     crates_bucket: "kellnr-crates"
     cratesio_bucket: "kellnr-cratesio"
 
+  # OAuth2/OpenID Connect authentication
+  # See https://kellnr.io/documentation for details
+  oauth2:
+    enabled: false
+    # OIDC issuer URL (discovery URL)
+    # Example: "https://authentik.example.com/application/o/kellnr/"
+    issuerUrl: ""
+    # OAuth2 client ID
+    clientId: ""
+    # OAuth2 client secret - prefer using clientSecretRef for production
+    clientSecret: ""
+    # Reference to an existing Kubernetes secret containing the client secret
+    # When set, this takes precedence over clientSecret
+    clientSecretRef:
+      name: ""
+      key: "client-secret"
+    # OAuth2 scopes to request (comma-separated)
+    scopes: "openid,profile,email"
+    # Automatically create local user accounts for new OAuth2 users
+    autoProvisionUsers: true
+    # Claim name to check for admin group membership (e.g., "groups")
+    adminGroupClaim: ""
+    # Value in the admin group claim that grants admin privileges (e.g., "kellnr-admins")
+    adminGroupValue: ""
+    # Claim name to check for read-only group membership (e.g., "groups")
+    readOnlyGroupClaim: ""
+    # Value in the read-only group claim that grants read-only access (e.g., "kellnr-readonly")
+    readOnlyGroupValue: ""
+    # Text displayed on the OAuth2 login button
+    buttonText: "Login with SSO"
+
 service:
   api:
     type: ClusterIP
