@@ -108,6 +108,7 @@ Setting to configure the ingress route for the web-ui and API.
 |------------------------|----------|--------------------------------------------------|--------------------|
 | ingress.enabled        | No       | Enable an Kubernetes ingress route for _Kellnr_. | true               |
 | ingress.className      | No       | Set an ingress className.                        | ""                 |
+| ingress.pathType       | No       | Set the ingress pathType.                        | "Prefix"           |
 | ingress.annotations    | No       | Set ingress annotations.                         | {}                 |
 | ingress.tls.secretName | No       | Set the secret name for a TLS certificate        | kellnr-cert-secret |
 
