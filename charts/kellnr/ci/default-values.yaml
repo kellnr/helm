@@ -1,0 +1,9 @@
+# Minimal configuration for Kind cluster testing
+# Tests the default chart behavior with required values
+
+kellnr:
+  origin:
+    hostname: "kellnr.test.local"
+
+ingress:
+  enabled: true

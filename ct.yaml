@@ -1,0 +1,10 @@
+# chart-testing configuration
+# https://github.com/helm/chart-testing
+
+target-branch: main
+chart-dirs:
+  - charts
+charts:
+  - charts/kellnr
+validate-maintainers: false
+check-version-increment: false

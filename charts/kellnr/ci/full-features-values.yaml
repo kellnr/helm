@@ -1,0 +1,30 @@
+# Test configuration with multiple features enabled
+
+kellnr:
+  origin:
+    hostname: "kellnr.test.local"
+    protocol: "https"
+  registry:
+    authRequired: true
+    cacheSize: 2000
+    maxCrateSize: 50
+  docs:
+    enabled: true
+    maxSize: 200
+  proxy:
+    enabled: true
+    numThreads: 10
+  log:
+    level: "debug"
+
+ingress:
+  enabled: true
+
+pvc:
+  enabled: true
+  name: "kellnr-test"
+  storageClassName: "standard"
+  storage: 2Gi
+
+secret:
+  enabled: true

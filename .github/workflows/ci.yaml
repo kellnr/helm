@@ -1,4 +1,4 @@
-name: Release Charts
+name: CI
 
 on:
   push:
@@ -14,6 +14,126 @@ permissions:
   pull-requests: write
 
 jobs:
+  lint-test:
+    name: Lint chart
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Helm lint
+        run: helm lint charts/kellnr
+
+  kubeconform:
+    name: Validate manifests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        k8s-version:
+          - "1.28.0"
+          - "1.29.0"
+          - "1.30.0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Install kubeconform
+        run: |
+          KUBECONFORM_VERSION="v0.6.7"
+          curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz
+          sudo mv kubeconform /usr/local/bin/
+
+      - name: Validate default values
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} -summary
+
+      - name: Validate without ingress
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            --set ingress.enabled=false \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} -summary
+
+      - name: Validate with PVC
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            --set pvc.enabled=true \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} -summary
+
+      - name: Validate secret mode
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            --set secret.enabled=true \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} -summary
+
+      - name: Validate with PostgreSQL
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            --set kellnr.postgres.enabled=true \
+            --set kellnr.postgres.user=kellnr \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} -summary
+
+      - name: Validate with HTTPRoute (Gateway API)
+        run: |
+          helm template kellnr charts/kellnr \
+            --set kellnr.origin.hostname="test.example.com" \
+            --set ingress.enabled=false \
+            --set httproute.enabled=true \
+            --set httproute.parentRefs[0].name=gateway \
+            --set httproute.parentRefs[0].namespace=default \
+            | kubeconform -strict -kubernetes-version ${{ matrix.k8s-version }} \
+              -skip HTTPRoute \
+              -summary
+
+  chart-testing:
+    name: Chart testing (Kind)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [lint-test, kubeconform]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install chart-testing
+        uses: helm/chart-testing-action@v2.7.0
+
+      - name: Create Kind cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: chart-testing
+
+      - name: Run chart-testing install
+        run: ct install --config ct.yaml
+
   update-chart-on-dispatch:
     name: Update chart versions on kellnr release
     if: github.event_name == 'repository_dispatch' && github.repository_owner == 'kellnr'
@@ -80,7 +200,9 @@ jobs:
           base: main
 
   release:
+    name: Release chart
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'kellnr'
+    needs: [lint-test, kubeconform]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

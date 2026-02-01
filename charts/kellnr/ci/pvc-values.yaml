@@ -1,0 +1,14 @@
+# Test configuration with persistent storage enabled
+
+kellnr:
+  origin:
+    hostname: "kellnr.test.local"
+
+ingress:
+  enabled: true
+
+pvc:
+  enabled: true
+  name: "kellnr-test"
+  storageClassName: "standard"
+  storage: 1Gi
