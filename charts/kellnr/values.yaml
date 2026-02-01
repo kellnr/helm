@@ -63,7 +63,7 @@ secret:
 kellnr:
   setup:
     adminPwd: "admin"
-    adminToken: "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD"
+    adminToken: ""  # If empty, no token is created on first startup. User must create one via web UI.
   registry:
     dataDir: "/var/lib/kellnr"
     sessionAgeSeconds: 28800
@@ -128,6 +128,23 @@ kellnr:
     allowHttp: true
     crates_bucket: "kellnr-crates"
     cratesio_bucket: "kellnr-cratesio"
+
+  oauth2:
+    enabled: false
+    issuerUrl: ""  # OIDC issuer URL (e.g., https://authentik.example.com/application/o/kellnr/)
+    clientId: ""
+    clientSecret: ""  # Prefer setting via secret for production
+    scopes: "openid,profile,email"  # Comma-separated list
+    autoProvisionUsers: true
+    adminGroupClaim: ""  # Claim name to check for admin group (e.g., "groups")
+    adminGroupValue: ""  # Value that grants admin privileges (e.g., "kellnr-admins")
+    readOnlyGroupClaim: ""  # Claim name to check for read-only group
+    readOnlyGroupValue: ""  # Value that grants read-only access
+    buttonText: "Login with SSO"
+
+  toolchain:
+    enabled: false
+    maxSize: 500  # Max toolchain archive size in MB
 
 service:
   api:
