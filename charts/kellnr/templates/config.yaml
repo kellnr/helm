@@ -17,11 +17,7 @@ data:
   KELLNR_REGISTRY__TOKEN_CACHE_MAX_CAPACITY: {{ .Values.kellnr.registry.token.cache.maxCapacity | quote }}
   KELLNR_REGISTRY__TOKEN_DB_RETRY_COUNT: {{ .Values.kellnr.registry.token.db.retryCount | quote }}
   KELLNR_REGISTRY__TOKEN_DB_RETRY_DELAY_MS: {{ .Values.kellnr.registry.token.db.retryDelayMs | quote }}
-{{- if .Values.kellnr.registry.cookieSigningKey }}
-  KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ .Values.kellnr.registry.cookieSigningKey | quote }}
-{{- end }}
 {{- if .Values.kellnr.registry.requiredCrateFields }}
-
   KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrateFields | quote }}
 {{- end }}
   KELLNR_REGISTRY__NEW_CRATES_RESTRICTED: {{ .Values.kellnr.registry.newCratesRestricted | quote }}
