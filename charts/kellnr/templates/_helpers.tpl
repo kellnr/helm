@@ -80,10 +80,10 @@ Cookie signing key used by Kellnr.
 Note: Helm templates don't have a "bytes" unit here; we can only validate string length.
 */}}
 {{- define "kellnr.cookieSigningKey" -}}
-{{- $key := default "" .Values.kellnr.registry.cookieSigningKey -}}
+{{- $key := default "" .Values.kellnr.registry.cookieSecret.cookieSigningKey -}}
 {{- if ne $key "" -}}
   {{- if lt (len $key) 64 -}}
-    {{- fail "kellnr.registry.cookieSigningKey must be at least 64 characters" -}}
+    {{- fail "kellnr.registry.cookieSecret.cookieSigningKey must be at least 64 characters" -}}
   {{- end -}}
   {{- $key -}}
 {{- else -}}
