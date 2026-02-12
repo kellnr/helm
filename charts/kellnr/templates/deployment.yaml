@@ -82,6 +82,11 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.kellnr.postgres.pwdSecretRef | nindent 16 }}
           {{- end }}
+          {{- if and .Values.kellnr.oauth2.enabled .Values.kellnr.oauth2.clientSecretRef.name }}
+          - name: KELLNR_OAUTH2__CLIENT_SECRET
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.oauth2.clientSecretRef | nindent 16 }}
+          {{- end }}
           envFrom:
             {{- if .Values.secret.enabled }}
             - secretRef:
