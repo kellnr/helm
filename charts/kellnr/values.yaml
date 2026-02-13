@@ -160,6 +160,10 @@ kellnr:
     # Text displayed on the OAuth2 login button
     buttonText: "Login with SSO"
 
+  toolchain:
+    enabled: false
+    maxSize: 500
+
 service:
   api:
     type: ClusterIP
