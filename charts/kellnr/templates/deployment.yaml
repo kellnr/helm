@@ -27,13 +27,16 @@ spec:
         {{- else if not .Values.secret.enabled }}
         configHash: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.docBuilder.enabled }}
+        docConfigHash: {{ include (print $.Template.BasePath "/doc-config.yaml") . | sha256sum }}
+        {{- end }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "kellnr.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
+      {{- if or .Values.pvc.enabled .Values.importCert.enabled .Values.docBuilder.enabled }}
       volumes:
         {{- if .Values.pvc.enabled }}
         - name: {{ .Values.deployment.volumes.name }}
@@ -44,6 +47,11 @@ spec:
         - name: {{ .Values.importCert.volumeName | quote }}
           configMap:
             name: {{ .Values.importCert.configMapName | quote }}
+        {{- end }}
+        {{- if .Values.docBuilder.enabled }}
+        - name: cargo-config
+          configMap:
+            name: {{ .Values.docBuilder.configMapName | quote }}
         {{- end }}
         - name: certs
           emptyDir: {}
@@ -87,10 +95,12 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.kellnr.oauth2.clientSecretRef | nindent 16 }}
           {{- end }}
-          {{- if .Values.kellnr.registry.cookieSecret.enabled }}
-          - name: KELLNR_REGISTRY__COOKIE_SECRET
+          {{- if and .Values.docBuilder.enabled .Values.docBuilder.tokenSecretRef.name }}
+          - name: RUSTUP_TOOLCHAIN
+            value: {{ .Values.docBuilder.rustupToolchain | quote }}
+          - name: CARGO_REGISTRIES_{{ .Values.docBuilder.registryName | upper }}_TOKEN
             valueFrom:
-              secretKeyRef: {{ toYaml .Values.kellnr.registry.cookieSecret.cookieSecretRef | nindent 16 }}
+              secretKeyRef: {{ toYaml .Values.docBuilder.tokenSecretRef | nindent 16 }}
           {{- end }}
           envFrom:
             {{- if .Values.secret.enabled }}
@@ -104,7 +114,7 @@ spec:
             - containerPort: {{ .Values.service.api.port }}
               name: kellnr-api
               protocol: TCP
-          {{- if or .Values.pvc.enabled .Values.importCert.enabled }}
+          {{- if or .Values.pvc.enabled .Values.importCert.enabled .Values.docBuilder.enabled }}
           volumeMounts:
             {{- if .Values.pvc.enabled }}
             - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
@@ -114,6 +124,12 @@ spec:
             {{- if .Values.importCert.enabled }}
             - name: {{ .Values.importCert.volumeName }}
               mountPath: "/usr/local/share/ca-certificates/"
+              readOnly: true
+            {{- end }}
+            {{- if .Values.docBuilder.enabled }}
+            - name: cargo-config
+              mountPath: "/usr/local/cargo/config.toml"
+              subPath: config.toml
               readOnly: true
             {{- end }}
             - mountPath: /etc/ssl/certs
