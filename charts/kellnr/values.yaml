@@ -222,6 +222,7 @@ importCert:
 
 docBuilder:
   enabled: false
+  rustupToolchain: "stable"
   registryName: kellnr
   configMapName: kellnr-doc-config
   tokenSecretRef:
