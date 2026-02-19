@@ -1,0 +1,24 @@
+# ConfigMap providing Cargo registry configuration for rustdoc auto-generation.
+# Allows Kellnr to resolve and download crates from itself (localhost) when
+# building documentation inside the container.
+
+{{- if .Values.docBuilder.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.docBuilder.configMapName | quote }}
+  labels:
+    {{- include "kellnr.labels" . | nindent 4 }}
+data:
+  config.toml: |-
+    [registries.{{ .Values.docBuilder.registryName }}]
+    index = "sparse+http://localhost:{{ .Values.service.api.port }}/api/v1/crates/"
+    credential-provider = ["cargo:token"]
+
+    [source.{{ .Values.docBuilder.registryName }}]
+    registry = "sparse+{{ include "kellnr.originUrl" . }}/api/v1/crates/"
+    replace-with = "{{ .Values.docBuilder.registryName }}-local"
+
+    [source.{{ .Values.docBuilder.registryName }}-local]
+    registry = "sparse+http://localhost:{{ .Values.service.api.port }}/api/v1/crates/"
+{{- end }}
