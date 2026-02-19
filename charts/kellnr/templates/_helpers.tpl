@@ -259,4 +259,22 @@ KELLNR_OAUTH2__BUTTON_TEXT: {{ .Values.kellnr.oauth2.buttonText | quote }}
 {{ end }}
 {{- end }}
 
+{{/*
+Build the origin URL (protocol + hostname + optional port).
+Omits the port when it matches the default for the protocol (443 for https, 80 for http).
+*/}}
+{{- define "kellnr.originUrl" -}}
+{{- $protocol := default "http" .Values.kellnr.origin.protocol -}}
+{{- $port := include "kellnr.serviceOriginPort" . | int -}}
+{{- $defaultPort := 80 -}}
+{{- if eq $protocol "https" -}}
+  {{- $defaultPort = 443 -}}
+{{- end -}}
+{{- if eq (int $port) (int $defaultPort) -}}
+{{- printf "%s://%s" $protocol .Values.kellnr.origin.hostname -}}
+{{- else -}}
+{{- printf "%s://%s:%d" $protocol .Values.kellnr.origin.hostname $port -}}
+{{- end -}}
+{{- end }}
+
 

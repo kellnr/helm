@@ -220,6 +220,14 @@ importCert:
   volumeName: "kellnr-cert-storage"
   certificate: ""
 
+docBuilder:
+  enabled: false
+  registryName: kellnr
+  configMapName: kellnr-doc-config
+  tokenSecretRef:
+    name: kellnr-doc-token
+    key: token
+
 dns:
   enabled: false
   dnsPolicy: "None"
