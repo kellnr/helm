@@ -257,6 +257,15 @@ KELLNR_OAUTH2__READ_ONLY_GROUP_VALUE: {{ .Values.kellnr.oauth2.readOnlyGroupValu
 {{ if not (eq .Values.kellnr.oauth2.buttonText nil) }}
 KELLNR_OAUTH2__BUTTON_TEXT: {{ .Values.kellnr.oauth2.buttonText | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.toolchain.enabled nil) }}
+KELLNR_TOOLCHAIN__ENABLED: {{ .Values.kellnr.toolchain.enabled | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.toolchain.maxSize nil) }}
+KELLNR_TOOLCHAIN__MAX_SIZE: {{ .Values.kellnr.toolchain.maxSize | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.s3.toolchain_bucket nil) }}
+KELLNR_S3__TOOLCHAIN_BUCKET: {{ .Values.kellnr.s3.toolchain_bucket | quote }}
+{{ end }}
 {{- end }}
 
 {{/*
