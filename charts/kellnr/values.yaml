@@ -128,6 +128,7 @@ kellnr:
     allowHttp: null # true
     crates_bucket: null # "kellnr-crates"
     cratesio_bucket: null # "kellnr-cratesio"
+    toolchain_bucket: null # "kellnr-toolchain"
 
   # OAuth2/OpenID Connect authentication
   # See https://kellnr.io/documentation for details
@@ -159,6 +160,10 @@ kellnr:
     readOnlyGroupValue: ""
     # Text displayed on the OAuth2 login button
     buttonText: null # "Login with SSO"
+
+  toolchain:
+    enabled: false
+    maxSize: 500
 
 service:
   api:
