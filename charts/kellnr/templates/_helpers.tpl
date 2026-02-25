@@ -139,10 +139,6 @@ KELLNR_REGISTRY__TOKEN_DB_RETRY_COUNT: {{ .Values.kellnr.registry.token.db.retry
 {{ if not (eq .Values.kellnr.registry.token.db.retryDelayMs nil) }}
 KELLNR_REGISTRY__TOKEN_DB_RETRY_DELAY_MS: {{ .Values.kellnr.registry.token.db.retryDelayMs | quote }}
 {{ end }}
-{{ $cookieKey := include "kellnr.cookieSigningKey" . }}
-{{ if ne $cookieKey "" }}
-KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ $cookieKey | quote }}
-{{ end }}
 {{ if .Values.kellnr.registry.requiredCrateFields }}
 KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrateFields | quote }}
 {{ end }}
