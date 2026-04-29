@@ -80,10 +80,10 @@ Cookie signing key used by Kellnr.
 Note: Helm templates don't have a "bytes" unit here; we can only validate string length.
 */}}
 {{- define "kellnr.cookieSigningKey" -}}
-{{- $key := default "" .Values.kellnr.registry.cookieSigningKey -}}
+{{- $key := default "" .Values.kellnr.registry.cookieSecret.cookieSigningKey -}}
 {{- if ne $key "" -}}
   {{- if lt (len $key) 64 -}}
-    {{- fail "kellnr.registry.cookieSigningKey must be at least 64 characters" -}}
+    {{- fail "kellnr.registry.cookieSecret.cookieSigningKey must be at least 64 characters" -}}
   {{- end -}}
   {{- $key -}}
 {{- else -}}
@@ -138,10 +138,6 @@ KELLNR_REGISTRY__TOKEN_DB_RETRY_COUNT: {{ .Values.kellnr.registry.token.db.retry
 {{ end }}
 {{ if not (eq .Values.kellnr.registry.token.db.retryDelayMs nil) }}
 KELLNR_REGISTRY__TOKEN_DB_RETRY_DELAY_MS: {{ .Values.kellnr.registry.token.db.retryDelayMs | quote }}
-{{ end }}
-{{ $cookieKey := include "kellnr.cookieSigningKey" . }}
-{{ if ne $cookieKey "" }}
-KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ $cookieKey | quote }}
 {{ end }}
 {{ if .Values.kellnr.registry.requiredCrateFields }}
 KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrateFields | quote }}
