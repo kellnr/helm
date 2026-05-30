@@ -98,6 +98,7 @@ kellnr:
     enabled: null # false
     numThreads: null # 20
     downloadOnUpdate: null # false
+    userAgent: null # "kellnr.io/kellnr"
   log:
     level: null # "info"
     format: null # "compact"
