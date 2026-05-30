@@ -164,6 +164,9 @@ KELLNR_PROXY__NUM_THREADS: {{ .Values.kellnr.proxy.numThreads | quote }}
 {{ if not (eq .Values.kellnr.proxy.downloadOnUpdate nil) }}
 KELLNR_PROXY__DOWNLOAD_ON_UPDATE: {{ .Values.kellnr.proxy.downloadOnUpdate | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.proxy.userAgent nil) }}
+KELLNR_PROXY__USER_AGENT: {{ .Values.kellnr.proxy.userAgent | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.log.level nil) }}
 KELLNR_LOG__LEVEL: {{ .Values.kellnr.log.level | quote }}
 {{ end }}
