@@ -1,0 +1,49 @@
+---
+# yamllint configuration used by chart-testing (ct) via .github/ct.yaml.
+# Based on chart-testing's default, with the inline-comment spacing relaxed to
+# one space to match the chart's `value # default` documentation style.
+rules:
+  braces:
+    level: error
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  brackets:
+    level: error
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  colons:
+    level: error
+    max-spaces-before: 0
+    max-spaces-after: 1
+  commas:
+    level: error
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+  comments:
+    level: error
+    require-starting-space: true
+    min-spaces-from-content: 1
+  comments-indentation: disable
+  document-end: disable
+  document-start: disable
+  empty-lines:
+    level: error
+    max: 2
+    max-start: 0
+    max-end: 0
+  hyphens:
+    level: error
+    max-spaces-after: 1
+  indentation:
+    level: error
+    spaces: consistent
+    indent-sequences: true
+    check-multi-line-strings: false
+  key-duplicates: enable
+  line-length: disable
+  new-line-at-end-of-file: enable
+  new-lines:
+    type: unix
+  trailing-spaces: enable
+  truthy: disable

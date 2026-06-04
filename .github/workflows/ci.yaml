@@ -2,25 +2,31 @@ name: Release Charts
 
 on:
   push:
-  pull_request:
     branches:
       - main
   repository_dispatch:
     types:
       - kellnr_release
 
+# Least-privilege by default; jobs elevate as needed.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   update-chart-on-dispatch:
     name: Update chart versions on kellnr release
     if: github.event_name == 'repository_dispatch' && github.repository_owner == 'kellnr'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Extract version
         id: v
@@ -62,7 +68,7 @@ jobs:
           echo "Bumped chart version $CURRENT_CHART_VERSION -> $NEXT_CHART_VERSION"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: chore/bump-kellnr-${{ steps.v.outputs.version }}
@@ -82,9 +88,11 @@ jobs:
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner == 'kellnr'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -94,11 +102,11 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v5
         with:
           version: v3.16.3
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.2.1
+        uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

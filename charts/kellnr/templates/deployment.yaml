@@ -21,11 +21,10 @@ spec:
   template:
     metadata:
       annotations:
-      {{- /* This annotation is used to trigger a rolling update when the config changes */}}
-        {{- if and .Values.secret.enabled (not .Values.secret.useExisting) }}
-        secretHash: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
-        {{- else if not .Values.secret.enabled }}
+      {{- /* These annotations trigger a rolling update when the config or secret changes */}}
         configHash: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{- if not .Values.secret.existingSecret }}
+        secretHash: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
         {{- end }}
         {{- if .Values.docBuilder.enabled }}
         docConfigHash: {{ include (print $.Template.BasePath "/doc-config.yaml") . | sha256sum }}
@@ -72,6 +71,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "kellnr.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -95,6 +95,11 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.kellnr.oauth2.clientSecretRef | nindent 16 }}
           {{- end }}
+          {{- if .Values.kellnr.registry.cookieSigningKeySecretRef.name }}
+          - name: KELLNR_REGISTRY__COOKIE_SIGNING_KEY
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.registry.cookieSigningKeySecretRef | nindent 16 }}
+          {{- end }}
           {{- if and .Values.docBuilder.enabled .Values.docBuilder.tokenSecretRef.name }}
           - name: RUSTUP_TOOLCHAIN
             value: {{ .Values.docBuilder.rustupToolchain | quote }}
@@ -102,18 +107,57 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.docBuilder.tokenSecretRef | nindent 16 }}
           {{- end }}
+          {{- with .Values.extraEnvVars }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
           envFrom:
-            {{- if .Values.secret.enabled }}
-            - secretRef:
-                name: {{ .Values.secret.name | quote }}
-            {{- else }}
             - configMapRef:
                 name: {{ .Values.configMap.name | quote }}
+            - secretRef:
+                name: {{ .Values.secret.existingSecret | default .Values.secret.name | quote }}
+            {{- with .Values.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . | quote }}
             {{- end }}
           ports:
             - containerPort: {{ .Values.service.api.port }}
               name: kellnr-api
               protocol: TCP
+          {{- if .Values.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.startupProbe.path }}
+              port: kellnr-api
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: kellnr-api
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: kellnr-api
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
           {{- if or .Values.pvc.enabled .Values.importCert.enabled .Values.docBuilder.enabled }}
           volumeMounts:
             {{- if .Values.pvc.enabled }}

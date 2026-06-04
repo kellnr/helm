@@ -1,0 +1,8 @@
+# Configuration for helm/chart-testing (ct), used by the lint-test workflow.
+target-branch: main
+chart-dirs:
+  - charts
+# The chart intentionally ships without a maintainers field; don't fail on it.
+validate-maintainers: false
+# yamllint config matching the chart's inline-comment style.
+lint-conf: .github/lintconf.yaml

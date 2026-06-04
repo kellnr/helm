@@ -56,9 +56,59 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.0.0
+
+**Breaking change: configuration is now split into a ConfigMap and a Secret.**
+
+> For background on what changed and why, see the blog post:
+> [A Safer Kellnr Helm Chart: Splitting Config and Secrets](https://kellnr.io/blog/helm-chart-v6).
+
+Previously, `secret.enabled` switched the *entire* configuration between a ConfigMap
+(default) and a Secret. The chart now always renders **both**: non-sensitive settings
+go into a ConfigMap and sensitive ones (admin password and token, cookie signing key,
+S3 keys, OAuth2 client secret) go into a Secret. Both are mounted into the pod, so
+sensitive values are no longer stored in a plaintext ConfigMap.
+
+Migration:
+
+- `secret.enabled` and `secret.useExisting` have been **removed**.
+  - If you used `secret.enabled: true` only to keep config out of a ConfigMap, no
+    action is needed — sensitive values now live in a Secret automatically.
+  - If you used `secret.useExisting: true` with a self-managed (e.g. SOPS-encrypted)
+    Secret, set `secret.existingSecret: <your-secret-name>` instead. The chart then
+    mounts your Secret in place of its own. Note that the Secret only needs to carry
+    the sensitive `KELLNR_*` variables; non-sensitive ones come from the ConfigMap.
+- New escape hatches: `extraEnvVars` (raw `EnvVar` list), `extraEnvVarsCM` and
+  `extraEnvVarsSecret` (names of existing ConfigMaps/Secrets) let you inject arbitrary
+  environment variables or mount your own config/secret alongside the chart's.
+- The cookie signing key can now be sourced from an existing Secret via
+  `kellnr.registry.cookieSigningKeySecretRef`. See [Cookie signing key](#cookie-signing-key).
+
+Other notable changes in this release:
+
+- **Health probes are now enabled by default**, hitting Kellnr's `/api/v1/health`
+  endpoint (startup, liveness, readiness). Tune or disable them via the
+  `startupProbe`/`livenessProbe`/`readinessProbe` values.
+- **The ServiceAccount token is no longer mounted** (`serviceAccount.automountServiceAccountToken: false`),
+  since Kellnr does not use the Kubernetes API. Set it back to `true` if you rely on it.
+- New tuning settings exposed: `kellnr.registry.downloadTimeoutSeconds`,
+  `downloadMaxConcurrent`, `downloadCounterFlushSeconds`, and
+  `kellnr.s3.connectTimeoutSeconds`/`requestTimeoutSeconds`.
+- A `values.schema.json` now validates values at install/template time (e.g. it
+  requires `kellnr.origin.hostname`).
+
 #### Chart version 5.0.0
 
 The default data directory changed from `/opt/kdata` to `/var/lib/kellnr` to align with the new Kellnr Docker image defaults. If you're upgrading an existing installation and were using the default data directory, explicitly set `kellnr.registry.dataDir=/opt/kdata` in your values to maintain compatibility with your existing persistent volume.
+
+## Testing
+
+After installing or upgrading, you can run the chart's built-in smoke test, which
+checks that Kellnr's `/api/v1/health` endpoint is reachable through its Service:
+
+```bash
+helm test kellnr
+```
 
 ## Configuration
 
@@ -68,26 +118,77 @@ All settings can be set with the `--set name=value` flag on `helm install`. Some
 
 Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values.
 
+#### Configuration storage (ConfigMap and Secret)
+
+The chart renders Kellnr's configuration into two objects, both mounted into the pod
+via `envFrom`:
+
+- a **ConfigMap** (`configMap.name`) holding the non-sensitive settings, and
+- a **Secret** (`secret.name`) holding the sensitive ones: the admin password and
+  token, the cookie signing key, the S3 keys, and the OAuth2 client secret.
+
+| Setting               | Required | Description                                                                                       | Default         |
+|-----------------------|----------|---------------------------------------------------------------------------------------------------|-----------------|
+| configMap.name        | No       | Name of the ConfigMap holding non-sensitive configuration.                                        | "kellnr-config" |
+| secret.name           | No       | Name of the Secret holding sensitive configuration.                                               | "kellnr-secret" |
+| secret.existingSecret | No       | Use an existing Secret (e.g. SOPS-managed) instead of creating one. The chart then mounts yours.  | ""              |
+
+To add your own variables or mount additional ConfigMaps/Secrets, see
+[Extra environment variables](#extra-environment-variables).
+
 #### Cookie signing key
 
-Kellnr uses a cookie signing key to sign its session cookie.
+Kellnr uses a cookie signing key to sign its session cookie. Setting it is recommended
+for multi-replica setups so every replica shares the same key (otherwise users are
+logged out when routed to a different replica). The key is sensitive and is stored in
+the chart-managed Secret.
 
-| Setting                          | Required | Description                                                                                                       | Default |
-|----------------------------------|----------|-------------------------------------------------------------------------------------------------------------------|---------|
-| kellnr.registry.cookieSigningKey | No       | Cookie signing key used for `KELLNR_REGISTRY__COOKIE_SIGNING_KEY`. Must be at least 64 characters.               | ""     |
+| Setting                                       | Required | Description                                                                                          | Default            |
+|-----------------------------------------------|----------|------------------------------------------------------------------------------------------------------|--------------------|
+| kellnr.registry.cookieSigningKey              | No       | Inline cookie signing key for `KELLNR_REGISTRY__COOKIE_SIGNING_KEY`. Must be at least 64 characters. | ""                 |
+| kellnr.registry.cookieSigningKeySecretRef.name | No      | Name of an existing Secret holding the key. Takes precedence over the inline value when set.         | ""                 |
+| kellnr.registry.cookieSigningKeySecretRef.key  | No      | Key within that Secret.                                                                              | "cookieSigningKey" |
 
 Notes:
 
-- If `secret.enabled: true` and `kellnr.registry.cookieSigningKey` is empty, the chart will **not** set `KELLNR_REGISTRY__COOKIE_SIGNING_KEY`.
+- If neither value is set, Kellnr generates a random key on startup (per pod).
+- Provide the key inline to have the chart store it in its Secret, **or** point
+  `cookieSigningKeySecretRef` at a Secret you manage yourself.
 
-- If `secret.enabled: false` (ConfigMap mode), you should set `kellnr.registry.cookieSigningKey` explicitly (otherwise the env var is not set).
-
-Example:
+Inline example:
 
 ````yaml
 kellnr:
   registry:
     cookieSigningKey: "<at least 64 characters>"
+````
+
+Existing-secret example:
+
+````yaml
+kellnr:
+  registry:
+    cookieSigningKeySecretRef:
+      name: my-cookie-secret
+      key: cookieSigningKey
+````
+
+#### Extra environment variables
+
+To inject arbitrary environment variables or mount your own ConfigMap/Secret alongside
+the chart's, use the `extraEnvVars*` settings.
+
+| Setting             | Required | Description                                                        | Default |
+|---------------------|----------|--------------------------------------------------------------------|---------|
+| extraEnvVars        | No       | List of raw Kubernetes `EnvVar` objects (supports `valueFrom`).    | []      |
+| extraEnvVarsCM      | No       | Name of an existing ConfigMap to load via `envFrom`.               | ""      |
+| extraEnvVarsSecret  | No       | Name of an existing Secret to load via `envFrom`.                  | ""      |
+
+````yaml
+extraEnvVars:
+  - name: AWS_REGION
+    value: "eu-central-1"
+extraEnvVarsSecret: my-aws-credentials
 ````
 
 

@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.configMap.name | quote }}
 data:
-{{- include "kellnr.envVars" . | nindent 2 }}
+{{- include "kellnr.configEnvVars" . | nindent 2 }}
