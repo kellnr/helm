@@ -115,6 +115,24 @@ All settings can be set with the `--set name=value` flag on `helm install`. Some
 
 Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values.
 
+#### Configuration storage (ConfigMap and Secret)
+
+The chart renders Kellnr's configuration into two objects, both mounted into the pod
+via `envFrom`:
+
+- a **ConfigMap** (`configMap.name`) holding the non-sensitive settings, and
+- a **Secret** (`secret.name`) holding the sensitive ones: the admin password and
+  token, the cookie signing key, the S3 keys, and the OAuth2 client secret.
+
+| Setting               | Required | Description                                                                                       | Default         |
+|-----------------------|----------|---------------------------------------------------------------------------------------------------|-----------------|
+| configMap.name        | No       | Name of the ConfigMap holding non-sensitive configuration.                                        | "kellnr-config" |
+| secret.name           | No       | Name of the Secret holding sensitive configuration.                                               | "kellnr-secret" |
+| secret.existingSecret | No       | Use an existing Secret (e.g. SOPS-managed) instead of creating one. The chart then mounts yours.  | ""              |
+
+To add your own variables or mount additional ConfigMaps/Secrets, see
+[Extra environment variables](#extra-environment-variables).
+
 #### Cookie signing key
 
 Kellnr uses a cookie signing key to sign its session cookie. Setting it is recommended
