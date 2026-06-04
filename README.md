@@ -60,6 +60,9 @@ helm upgrade kellnr kellnr/kellnr
 
 **Breaking change: configuration is now split into a ConfigMap and a Secret.**
 
+> For background on what changed and why, see the blog post:
+> [A Safer Kellnr Helm Chart: Splitting Config and Secrets](https://kellnr.io/blog/helm-chart-v6).
+
 Previously, `secret.enabled` switched the *entire* configuration between a ConfigMap
 (default) and a Secret. The chart now always renders **both**: non-sensitive settings
 go into a ConfigMap and sensitive ones (admin password and token, cookie signing key,
