@@ -92,17 +92,12 @@ Note: Helm templates don't have a "bytes" unit here; we can only validate string
 {{- end }}
 
 {{/*
-Generate Kellnr environment variables.
+Generate non-sensitive Kellnr environment variables (rendered into the ConfigMap).
+Sensitive values are rendered separately by "kellnr.secretEnvVars".
 Only generate variables if they are explicitly set (not null) in values.yaml.
 Note: We avoid using "{{- if" and "{{- end" inside to prevent stripping newlines between variables.
 */}}
-{{- define "kellnr.envVars" -}}
-{{ if not (eq .Values.kellnr.setup.adminPwd nil) }}
-KELLNR_SETUP__ADMIN_PWD: {{ .Values.kellnr.setup.adminPwd | quote }}
-{{ end }}
-{{ if not (eq .Values.kellnr.setup.adminToken nil) }}
-KELLNR_SETUP__ADMIN_TOKEN: {{ .Values.kellnr.setup.adminToken | quote }}
-{{ end }}
+{{- define "kellnr.configEnvVars" -}}
 {{ if not (eq .Values.kellnr.registry.dataDir nil) }}
 KELLNR_REGISTRY__DATA_DIR: {{ .Values.kellnr.registry.dataDir | quote }}
 {{ end }}
@@ -139,9 +134,14 @@ KELLNR_REGISTRY__TOKEN_DB_RETRY_COUNT: {{ .Values.kellnr.registry.token.db.retry
 {{ if not (eq .Values.kellnr.registry.token.db.retryDelayMs nil) }}
 KELLNR_REGISTRY__TOKEN_DB_RETRY_DELAY_MS: {{ .Values.kellnr.registry.token.db.retryDelayMs | quote }}
 {{ end }}
-{{ $cookieKey := include "kellnr.cookieSigningKey" . }}
-{{ if ne $cookieKey "" }}
-KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ $cookieKey | quote }}
+{{ if not (eq .Values.kellnr.registry.downloadTimeoutSeconds nil) }}
+KELLNR_REGISTRY__DOWNLOAD_TIMEOUT_SECONDS: {{ .Values.kellnr.registry.downloadTimeoutSeconds | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registry.downloadMaxConcurrent nil) }}
+KELLNR_REGISTRY__DOWNLOAD_MAX_CONCURRENT: {{ .Values.kellnr.registry.downloadMaxConcurrent | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registry.downloadCounterFlushSeconds nil) }}
+KELLNR_REGISTRY__DOWNLOAD_COUNTER_FLUSH_SECONDS: {{ .Values.kellnr.registry.downloadCounterFlushSeconds | quote }}
 {{ end }}
 {{ if .Values.kellnr.registry.requiredCrateFields }}
 KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrateFields | quote }}
@@ -206,17 +206,17 @@ KELLNR_POSTGRESQL__DB: {{ .Values.kellnr.postgres.db | quote }}
 {{ if not (eq .Values.kellnr.s3.enabled nil) }}
 KELLNR_S3__ENABLED: {{ .Values.kellnr.s3.enabled | quote }}
 {{ end }}
-{{ if .Values.kellnr.s3.accessKey }}
-KELLNR_S3__ACCESS_KEY: {{ .Values.kellnr.s3.accessKey | quote }}
-{{ end }}
-{{ if .Values.kellnr.s3.secretKey }}
-KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
-{{ end }}
 {{ if not (eq .Values.kellnr.s3.region nil) }}
 KELLNR_S3__REGION: {{ .Values.kellnr.s3.region | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.s3.endpoint nil) }}
 KELLNR_S3__ENDPOINT: {{ .Values.kellnr.s3.endpoint | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.s3.connectTimeoutSeconds nil) }}
+KELLNR_S3__CONNECT_TIMEOUT_SECONDS: {{ .Values.kellnr.s3.connectTimeoutSeconds | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.s3.requestTimeoutSeconds nil) }}
+KELLNR_S3__REQUEST_TIMEOUT_SECONDS: {{ .Values.kellnr.s3.requestTimeoutSeconds | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.s3.allowHttp nil) }}
 KELLNR_S3__ALLOW_HTTP: {{ .Values.kellnr.s3.allowHttp | quote }}
@@ -235,9 +235,6 @@ KELLNR_OAUTH2__ISSUER_URL: {{ .Values.kellnr.oauth2.issuerUrl | quote }}
 {{ end }}
 {{ if .Values.kellnr.oauth2.clientId }}
 KELLNR_OAUTH2__CLIENT_ID: {{ .Values.kellnr.oauth2.clientId | quote }}
-{{ end }}
-{{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
-KELLNR_OAUTH2__CLIENT_SECRET: {{ .Values.kellnr.oauth2.clientSecret | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.oauth2.scopes nil) }}
 KELLNR_OAUTH2__SCOPES: {{ .Values.kellnr.oauth2.scopes | quote }}
@@ -268,6 +265,34 @@ KELLNR_TOOLCHAIN__MAX_SIZE: {{ .Values.kellnr.toolchain.maxSize | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.s3.toolchain_bucket nil) }}
 KELLNR_S3__TOOLCHAIN_BUCKET: {{ .Values.kellnr.s3.toolchain_bucket | quote }}
+{{ end }}
+{{- end }}
+
+{{/*
+Generate sensitive Kellnr environment variables (rendered into the Secret).
+A value is omitted when it is sourced from an existing secret via a *SecretRef,
+so it is injected directly into the container via secretKeyRef instead.
+Note: We avoid using "{{- if" and "{{- end" inside to prevent stripping newlines between variables.
+*/}}
+{{- define "kellnr.secretEnvVars" -}}
+{{ if not (eq .Values.kellnr.setup.adminPwd nil) }}
+KELLNR_SETUP__ADMIN_PWD: {{ .Values.kellnr.setup.adminPwd | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.setup.adminToken nil) }}
+KELLNR_SETUP__ADMIN_TOKEN: {{ .Values.kellnr.setup.adminToken | quote }}
+{{ end }}
+{{ $cookieKey := include "kellnr.cookieSigningKey" . }}
+{{ if and (ne $cookieKey "") (not .Values.kellnr.registry.cookieSigningKeySecretRef.name) }}
+KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ $cookieKey | quote }}
+{{ end }}
+{{ if .Values.kellnr.s3.accessKey }}
+KELLNR_S3__ACCESS_KEY: {{ .Values.kellnr.s3.accessKey | quote }}
+{{ end }}
+{{ if .Values.kellnr.s3.secretKey }}
+KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
+{{ end }}
+{{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
+KELLNR_OAUTH2__CLIENT_SECRET: {{ .Values.kellnr.oauth2.clientSecret | quote }}
 {{ end }}
 {{- end }}
 
