@@ -110,7 +110,15 @@ extraEnvVarsSecret: ""
 kellnr:
   setup:
     adminPwd: "admin"
+    # When `name` is set, it takes precedence over the inline `adminPwd` above.
+    adminPwdSecretRef:
+      name: ""
+      key: "adminPwd"
     adminToken: "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD"
+    # When `name` is set, it takes precedence over the inline `adminToken` above.
+    adminTokenSecretRef:
+      name: ""
+      key: "adminToken"
   registry:
     dataDir: "/var/lib/kellnr"
     sessionAgeSeconds: null # 28800
@@ -182,7 +190,15 @@ kellnr:
   s3:
     enabled: null # false
     accessKey: ""
+    # When `name` is set, it takes precedence over the inline `accessKey` above.
+    accessKeySecretRef:
+      name: ""
+      key: "accessKey"
     secretKey: ""
+    # When `name` is set, it takes precedence over the inline `secretKey` above.
+    secretKeySecretRef:
+      name: ""
+      key: "secretKey"
     region: ""
     endpoint: ""
     allowHttp: null # true
