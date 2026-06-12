@@ -275,20 +275,20 @@ so it is injected directly into the container via secretKeyRef instead.
 Note: We avoid using "{{- if" and "{{- end" inside to prevent stripping newlines between variables.
 */}}
 {{- define "kellnr.secretEnvVars" -}}
-{{ if not (eq .Values.kellnr.setup.adminPwd nil) }}
+{{ if and (not (eq .Values.kellnr.setup.adminPwd nil)) (not .Values.kellnr.setup.adminPwdSecretRef.name) }}
 KELLNR_SETUP__ADMIN_PWD: {{ .Values.kellnr.setup.adminPwd | quote }}
 {{ end }}
-{{ if not (eq .Values.kellnr.setup.adminToken nil) }}
+{{ if and (not (eq .Values.kellnr.setup.adminToken nil)) (not .Values.kellnr.setup.adminTokenSecretRef.name) }}
 KELLNR_SETUP__ADMIN_TOKEN: {{ .Values.kellnr.setup.adminToken | quote }}
 {{ end }}
 {{ $cookieKey := include "kellnr.cookieSigningKey" . }}
 {{ if and (ne $cookieKey "") (not .Values.kellnr.registry.cookieSigningKeySecretRef.name) }}
 KELLNR_REGISTRY__COOKIE_SIGNING_KEY: {{ $cookieKey | quote }}
 {{ end }}
-{{ if .Values.kellnr.s3.accessKey }}
+{{ if and .Values.kellnr.s3.accessKey (not .Values.kellnr.s3.accessKeySecretRef.name) }}
 KELLNR_S3__ACCESS_KEY: {{ .Values.kellnr.s3.accessKey | quote }}
 {{ end }}
-{{ if .Values.kellnr.s3.secretKey }}
+{{ if and .Values.kellnr.s3.secretKey (not .Values.kellnr.s3.secretKeySecretRef.name) }}
 KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
 {{ end }}
 {{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
