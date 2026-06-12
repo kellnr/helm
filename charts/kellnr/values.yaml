@@ -295,6 +295,8 @@ docBuilder:
   tokenSecretRef:
     name: kellnr-doc-token
     key: token
+  # Additional raw config appended to the generated Cargo config.toml.
+  configMapExtraConfig: ""
 
 dns:
   enabled: false

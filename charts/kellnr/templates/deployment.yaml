@@ -103,7 +103,7 @@ spec:
           {{- if and .Values.docBuilder.enabled .Values.docBuilder.tokenSecretRef.name }}
           - name: RUSTUP_TOOLCHAIN
             value: {{ .Values.docBuilder.rustupToolchain | quote }}
-          - name: CARGO_REGISTRIES_{{ .Values.docBuilder.registryName | upper }}_TOKEN
+          - name: CARGO_REGISTRIES_{{ .Values.docBuilder.registryName | upper | replace "-" "_" }}_TOKEN
             valueFrom:
               secretKeyRef: {{ toYaml .Values.docBuilder.tokenSecretRef | nindent 16 }}
           {{- end }}
