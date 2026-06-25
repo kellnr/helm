@@ -21,6 +21,8 @@ data:
 
     [source.{{ .Values.docBuilder.registryName }}-local]
     registry = "sparse+http://localhost:{{ .Values.service.api.port }}/api/v1/crates/"
+{{- with .Values.docBuilder.extraCargoConfig }}
 
-    {{ .Values.docBuilder.configMapExtraConfig | nindent 4 }}
+{{ . | indent 4 }}
+{{- end }}
 {{- end }}
