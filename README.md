@@ -136,6 +136,26 @@ via `envFrom`:
 To add your own variables or mount additional ConfigMaps/Secrets, see
 [Extra environment variables](#extra-environment-variables).
 
+#### Admin password and token
+
+These credentials can also be set in any other secret and then referenced from this chart.
+
+| Setting                               | Required | Description                                                                                       | Default                            |
+|---------------------------------------|----------|---------------------------------------------------------------------------------------------------|------------------------------------|
+| kellnr.setup.adminPwd                 | No       | Inline password for the default admin account.                                                    | "admin"                            |
+| kellnr.setup.adminPwdSecretRef.name   | No       | Name of an existing Secret holding the password. Takes precedence over the inline value when set. | ""                                 |
+| kellnr.setup.adminPwdSecretRef.key    | No       | Key within that Secret.                                                                           | "adminPwd"                         |
+| kellnr.setup.adminToken               | No       | Inline read-write token for the default admin account.                                            | "Zy9HhJ02RJmg0GCrgLfaCVfU6IwDfhXD" |
+| kellnr.setup.adminTokenSecretRef.name | No       | Name of an existing Secret holding the token. Takes precedence over the inline value when set.    | ""                                 |
+| kellnr.setup.adminTokenSecretRef.key  | No       | Key within that Secret.                                                                           | "adminToken"                       |
+
+Notes:
+
+- Both fields have non-empty defaults, so the admin account always has credentials.
+  Change them before exposing Kellnr.
+- Provide a value inline to have the chart store it in its Secret, or point the
+  matching `adminPwdSecretRef`/`adminTokenSecretRef` at a Secret you manage yourself.
+
 #### Cookie signing key
 
 Kellnr uses a cookie signing key to sign its session cookie. Setting it is recommended
@@ -295,6 +315,23 @@ A _PersistentVolumeClaim_ can be used by _Kellnr_ to hold all stored data.
 | pvc.storage          | No       | Size of the storage.                                             | 5Gi   |
 
 For a full set of possible variables see: [values.yaml](./charts/kellnr/values.yaml)
+
+### S3 storage
+
+When _Kellnr_ uses S3-compatible object storage (`kellnr.s3.enabled`), the access and
+secret keys are sensitive and stored in the chart-managed Secret. Each can be provided
+inline or sourced from an existing Secret you manage yourself.
+
+| Setting                           | Required | Description                                                                                         | Default     |
+|-----------------------------------|----------|-----------------------------------------------------------------------------------------------------|-------------|
+| kellnr.s3.accessKey               | No       | Inline S3 access key.                                                                               | ""          |
+| kellnr.s3.accessKeySecretRef.name | No       | Name of an existing Secret holding the access key. Takes precedence over the inline value when set. | ""          |
+| kellnr.s3.accessKeySecretRef.key  | No       | Key within that Secret.                                                                             | "accessKey" |
+| kellnr.s3.secretKey               | No       | Inline S3 secret key.                                                                               | ""          |
+| kellnr.s3.secretKeySecretRef.name | No       | Name of an existing Secret holding the secret key. Takes precedence over the inline value when set. | ""          |
+| kellnr.s3.secretKeySecretRef.key  | No       | Key within that Secret.                                                                             | "secretKey" |
+
+For the full set of S3 options see: [values.yaml](./charts/kellnr/values.yaml)
 
 ## Feedback
 

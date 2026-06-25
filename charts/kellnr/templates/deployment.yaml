@@ -100,6 +100,26 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.kellnr.registry.cookieSigningKeySecretRef | nindent 16 }}
           {{- end }}
+          {{- if .Values.kellnr.setup.adminPwdSecretRef.name }}
+          - name: KELLNR_SETUP__ADMIN_PWD
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.setup.adminPwdSecretRef | nindent 16 }}
+          {{- end }}
+          {{- if .Values.kellnr.setup.adminTokenSecretRef.name }}
+          - name: KELLNR_SETUP__ADMIN_TOKEN
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.setup.adminTokenSecretRef | nindent 16 }}
+          {{- end }}
+          {{- if .Values.kellnr.s3.accessKeySecretRef.name }}
+          - name: KELLNR_S3__ACCESS_KEY
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.s3.accessKeySecretRef | nindent 16 }}
+          {{- end }}
+          {{- if .Values.kellnr.s3.secretKeySecretRef.name }}
+          - name: KELLNR_S3__SECRET_KEY
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.s3.secretKeySecretRef | nindent 16 }}
+          {{- end }}
           {{- if and .Values.docBuilder.enabled .Values.docBuilder.tokenSecretRef.name }}
           - name: RUSTUP_TOOLCHAIN
             value: {{ .Values.docBuilder.rustupToolchain | quote }}
