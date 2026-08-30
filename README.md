@@ -138,17 +138,20 @@ To add your own variables or mount additional ConfigMaps/Secrets, see
 
 #### OAuth2 audience validation
 
-Set `kellnr.oauth2.allowAdditionalAudiences` to `true` when an ID token may
-contain audiences in addition to Kellnr's configured client ID. The configured
-client ID must still be present. The default is `false`.
+Set `kellnr.oauth2.additionalAudiences` to a YAML list of trusted audiences
+when an ID token may contain audiences in addition to Kellnr's configured
+client ID. The configured client ID must still be present. The default is an
+empty list.
 
 ```yaml
 kellnr:
   oauth2:
-    allowAdditionalAudiences: true
+    additionalAudiences:
+      - audience-one
+      - audience-two
 ```
 
-The chart renders this as `KELLNR_OAUTH2__ALLOW_ADDITIONAL_AUDIENCES` in the
+The chart renders this as `KELLNR_OAUTH2__ADDITIONAL_AUDIENCES` in the
 Kellnr ConfigMap.
 
 #### Admin password and token

@@ -60,7 +60,10 @@
         "oauth2": {
           "type": "object",
           "properties": {
-            "allowAdditionalAudiences": { "type": ["boolean", "null"] }
+            "additionalAudiences": {
+              "type": ["array", "null"],
+              "items": { "type": "string" }
+            }
           }
         }
       }
