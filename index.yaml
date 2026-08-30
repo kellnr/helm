@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   kellnr:
   - apiVersion: v2
+    appVersion: 6.8.0
+    created: "2026-08-30T06:31:06.790283345Z"
+    description: Helm chart for Kellnr, the free Rust Crate registry
+    digest: f7f475d7b215bbef2049de479183aef3b230e4e9639bd8d041ab8140f49f3be1
+    name: kellnr
+    type: application
+    urls:
+    - https://github.com/kellnr/helm/releases/download/kellnr-6.1.7/kellnr-6.1.7.tgz
+    version: 6.1.7
+  - apiVersion: v2
     appVersion: 6.7.0
     created: "2026-08-29T19:05:12.931493085Z"
     description: Helm chart for Kellnr, the free Rust Crate registry
@@ -751,4 +761,4 @@ entries:
     urls:
     - https://github.com/kellnr/helm/releases/download/kellnr-1.9.0/kellnr-1.9.0.tgz
     version: 1.9.0
-generated: "2026-08-29T19:05:12.931854398Z"
+generated: "2026-08-30T06:31:06.790556154Z"
