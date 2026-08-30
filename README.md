@@ -136,6 +136,21 @@ via `envFrom`:
 To add your own variables or mount additional ConfigMaps/Secrets, see
 [Extra environment variables](#extra-environment-variables).
 
+#### OAuth2 audience validation
+
+Set `kellnr.oauth2.allowAdditionalAudiences` to `true` when an ID token may
+contain audiences in addition to Kellnr's configured client ID. The configured
+client ID must still be present. The default is `false`.
+
+```yaml
+kellnr:
+  oauth2:
+    allowAdditionalAudiences: true
+```
+
+The chart renders this as `KELLNR_OAUTH2__ALLOW_ADDITIONAL_AUDIENCES` in the
+Kellnr ConfigMap.
+
 #### Admin password and token
 
 These credentials can also be set in any other secret and then referenced from this chart.

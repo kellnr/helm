@@ -236,6 +236,9 @@ KELLNR_OAUTH2__ISSUER_URL: {{ .Values.kellnr.oauth2.issuerUrl | quote }}
 {{ if .Values.kellnr.oauth2.clientId }}
 KELLNR_OAUTH2__CLIENT_ID: {{ .Values.kellnr.oauth2.clientId | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.oauth2.allowAdditionalAudiences nil) }}
+KELLNR_OAUTH2__ALLOW_ADDITIONAL_AUDIENCES: {{ .Values.kellnr.oauth2.allowAdditionalAudiences | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.oauth2.scopes nil) }}
 KELLNR_OAUTH2__SCOPES: {{ .Values.kellnr.oauth2.scopes | quote }}
 {{ end }}
@@ -313,5 +316,4 @@ Omits the port when it matches the default for the protocol (443 for https, 80 f
 {{- printf "%s://%s:%d" $protocol .Values.kellnr.origin.hostname $port -}}
 {{- end -}}
 {{- end }}
-
 
