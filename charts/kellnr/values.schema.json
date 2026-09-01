@@ -56,6 +56,15 @@
             "port": { "type": ["integer", "null"] },
             "protocol": { "type": ["string", "null"] }
           }
+        },
+        "oauth2": {
+          "type": "object",
+          "properties": {
+            "additionalAudiences": {
+              "type": ["array", "null"],
+              "items": { "type": "string" }
+            }
+          }
         }
       }
     },

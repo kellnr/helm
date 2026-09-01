@@ -219,6 +219,8 @@ kellnr:
     clientId: ""
     # OAuth2 client secret - prefer using clientSecretRef for production
     clientSecret: ""
+    # Additional audiences accepted when the configured client ID is also present
+    additionalAudiences: null # ["audience-one", "audience-two"]
     # Reference to an existing Kubernetes secret containing the client secret
     # When set, this takes precedence over clientSecret
     clientSecretRef:
