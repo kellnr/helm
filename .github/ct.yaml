@@ -4,5 +4,10 @@ chart-dirs:
   - charts
 # The chart intentionally ships without a maintainers field; don't fail on it.
 validate-maintainers: false
+# A pull request may change the chart without bumping its version. Such a change
+# simply is not released: chart-releaser skips a version that already has a
+# release, and the next version bump ships the accumulated changes. Requiring a
+# bump per pull request would force a chart release for every merge.
+check-version-increment: false
 # yamllint config matching the chart's inline-comment style.
 lint-conf: .github/lintconf.yaml
