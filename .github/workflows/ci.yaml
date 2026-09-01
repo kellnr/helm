@@ -106,7 +106,14 @@ jobs:
         with:
           version: v3.16.3
 
+      # A merge that changes the chart without bumping its version must not fail
+      # here. chart-releaser detects the chart as changed since the last tag and
+      # repackages it, so without `skip_existing` the upload of an already
+      # released version aborts the job. Skipping leaves the existing release
+      # untouched; the changes ship with the next version bump.
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
+        with:
+          skip_existing: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
