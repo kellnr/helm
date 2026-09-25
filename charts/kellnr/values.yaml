@@ -205,6 +205,7 @@ kellnr:
     crates_bucket: null # "kellnr-crates"
     cratesio_bucket: null # "kellnr-cratesio"
     toolchain_bucket: null # "kellnr-toolchain"
+    docs_bucket: null # "kellnr-docs"
     connectTimeoutSeconds: null # 5
     requestTimeoutSeconds: null # 30
 
