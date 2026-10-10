@@ -54,7 +54,8 @@
           "properties": {
             "hostname": { "type": "string", "minLength": 1 },
             "port": { "type": ["integer", "null"] },
-            "protocol": { "type": ["string", "null"] }
+            "protocol": { "type": ["string", "null"] },
+            "path": { "type": ["string", "null"] }
           }
         },
         "oauth2": {

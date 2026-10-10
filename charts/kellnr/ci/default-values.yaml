@@ -1,0 +1,3 @@
+# Install the chart with its default values.
+# chart-testing only uses the files in this directory once it exists.
+{}

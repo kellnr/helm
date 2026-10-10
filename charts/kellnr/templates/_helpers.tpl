@@ -181,8 +181,8 @@ KELLNR_LOCAL__IP: {{ .Values.kellnr.local.ip | quote }}
 {{ end }}
 KELLNR_LOCAL__PORT: {{ .Values.service.api.port | quote }}
 KELLNR_ORIGIN__HOSTNAME: {{ required "A valid hostname, where Kellnr will be reachable is required." .Values.kellnr.origin.hostname | quote }}
-{{ if .Values.ingress.path }}
-KELLNR_ORIGIN__PATH: {{ .Values.ingress.path | quote }}
+{{ with .Values.kellnr.origin.path | default .Values.ingress.path }}
+KELLNR_ORIGIN__PATH: {{ . | quote }}
 {{ end }}
 KELLNR_ORIGIN__PORT: {{ include "kellnr.serviceOriginPort" . | quote }}
 {{ if not (eq .Values.kellnr.origin.protocol nil) }}
@@ -297,6 +297,14 @@ KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
 {{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
 KELLNR_OAUTH2__CLIENT_SECRET: {{ .Values.kellnr.oauth2.clientSecret | quote }}
 {{ end }}
+{{- end }}
+
+{{/*
+URL path prefix Kellnr serves all routes under, without a trailing slash.
+Uses kellnr.origin.path and falls back to ingress.path. Empty if Kellnr is served at the root.
+*/}}
+{{- define "kellnr.pathPrefix" -}}
+{{- .Values.kellnr.origin.path | default .Values.ingress.path | default "" | trim | trimSuffix "/" -}}
 {{- end }}
 
 {{/*

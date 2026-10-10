@@ -18,4 +18,4 @@ spec:
         - "--fail"
         - "--silent"
         - "--show-error"
-        - "http://{{ include "kellnr.fullname" . }}:{{ .Values.service.api.port }}/api/v1/health"
+        - "http://{{ include "kellnr.fullname" . }}:{{ .Values.service.api.port }}{{ include "kellnr.pathPrefix" . }}/api/v1/health"

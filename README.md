@@ -104,7 +104,8 @@ The default data directory changed from `/opt/kdata` to `/var/lib/kellnr` to ali
 ## Testing
 
 After installing or upgrading, you can run the chart's built-in smoke test, which
-checks that Kellnr's `/api/v1/health` endpoint is reachable through its Service:
+checks that Kellnr's `/api/v1/health` endpoint (below the
+[path prefix](#path-prefix), if set) is reachable through its Service:
 
 ```bash
 helm test kellnr
@@ -117,6 +118,24 @@ All settings can be set with the `--set name=value` flag on `helm install`. Some
 ### Kellnr
 
 Check the [documentation](https://kellnr.io/documentation) and the [values.yaml](./charts/kellnr/values.yaml) for possible configuration values.
+
+#### Path prefix
+
+Kellnr can be served below a URL path prefix, e.g. `https://example.com/kellnr`. The
+prefix is set with `kellnr.origin.path` and falls back to `ingress.path` if unset.
+It is used for Kellnr's own routes, the health probes, the `helm test` smoke test,
+and the doc builder's Cargo configuration.
+
+| Setting            | Required | Description                                                           | Default        |
+|--------------------|----------|-----------------------------------------------------------------------|----------------|
+| kellnr.origin.path | No       | URL path prefix Kellnr is served under. Falls back to `ingress.path`. | `ingress.path` |
+
+When routing with the Gateway API HTTPRoute, set `kellnr.origin.path` to the same
+value as `httproute.path`, unless your HTTPRoute strips the prefix with a
+`URLRewrite` filter. `httproute.path` alone does not change Kellnr's prefix.
+
+The `startupProbe.path`, `livenessProbe.path` and `readinessProbe.path` settings
+default to `<prefix>/api/v1/health`. Explicitly set probe paths are used as-is.
 
 #### Configuration storage (ConfigMap and Secret)
 
@@ -243,14 +262,14 @@ Settings to configure the web-ui/API endpoint service and the crate index servic
 
 Setting to configure the ingress route for the web-ui and API.
 
-| Setting                | Required | Description                                      | Default            |
-|------------------------|----------|--------------------------------------------------|--------------------|
-| ingress.enabled        | No       | Enable an Kubernetes ingress route for _Kellnr_. | true               |
-| ingress.className      | No       | Set an ingress className.                        | ""                 |
-| ingress.pathType       | No       | Set the ingress pathType.                        | "Prefix"           |
-| ingress.path           | No       | Set the ingress path.                            | "/"                |
-| ingress.annotations    | No       | Set ingress annotations.                         | {}                 |
-| ingress.tls.secretName | No       | Set the secret name for a TLS certificate        | kellnr-cert-secret |
+| Setting                | Required | Description                                                                       | Default            |
+|------------------------|----------|-----------------------------------------------------------------------------------|--------------------|
+| ingress.enabled        | No       | Enable an Kubernetes ingress route for _Kellnr_.                                  | true               |
+| ingress.className      | No       | Set an ingress className.                                                         | ""                 |
+| ingress.pathType       | No       | Set the ingress pathType.                                                         | "Prefix"           |
+| ingress.path           | No       | Set the ingress path. Also Kellnr's path prefix if `kellnr.origin.path` is unset. | "/"                |
+| ingress.annotations    | No       | Set ingress annotations.                                                          | {}                 |
+| ingress.tls.secretName | No       | Set the secret name for a TLS certificate                                         | kellnr-cert-secret |
 
 ### TLS Certificate
 

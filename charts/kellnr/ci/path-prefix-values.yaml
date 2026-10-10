@@ -1,0 +1,5 @@
+# Serve Kellnr below a path prefix. The health probes and the helm test
+# smoke test must use the prefixed /kellnr/api/v1/health endpoint.
+kellnr:
+  origin:
+    path: /kellnr
