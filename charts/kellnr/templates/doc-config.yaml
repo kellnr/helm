@@ -3,7 +3,8 @@
 # building documentation inside the container.
 
 {{- if .Values.docBuilder.enabled }}
-{{- $ingressPath := .Values.ingress.path | default "/" | trimSuffix "/" }}
+{{- $pathPrefix := include "kellnr.pathPrefix" . }}
+{{- $localIndex := printf "sparse+http://localhost:%v%s/api/v1/crates/" .Values.service.api.port $pathPrefix }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,15 +14,15 @@ metadata:
 data:
   config.toml: |-
     [registries.{{ .Values.docBuilder.registryName }}]
-    index = "sparse+http://localhost:{{ .Values.service.api.port }}{{ $ingressPath }}/api/v1/crates/"
+    index = "{{ $localIndex }}"
     credential-provider = ["cargo:token"]
 
     [source.{{ .Values.docBuilder.registryName }}]
-    registry = "sparse+{{ include "kellnr.originUrl" . }}{{ $ingressPath }}/api/v1/crates/"
+    registry = "sparse+{{ include "kellnr.originUrl" . }}{{ $pathPrefix }}/api/v1/crates/"
     replace-with = "{{ .Values.docBuilder.registryName }}-local"
 
     [source.{{ .Values.docBuilder.registryName }}-local]
-    registry = "sparse+http://localhost:{{ .Values.service.api.port }}{{ $ingressPath }}/api/v1/crates/"
+    registry = "{{ $localIndex }}"
 {{- with .Values.docBuilder.extraCargoConfig }}
 
 {{ . | indent 4 }}

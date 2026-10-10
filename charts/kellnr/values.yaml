@@ -47,23 +47,24 @@ securityContext:
 # Health probes against Kellnr's /api/v1/health endpoint.
 # The startup probe gates liveness/readiness until the app is up
 # (failureThreshold * periodSeconds = max startup time).
+# An empty path defaults to "<path prefix>/api/v1/health", see kellnr.origin.path.
 startupProbe:
   enabled: true
-  path: "/api/v1/health"
+  path: ""
   initialDelaySeconds: 5
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 30
 livenessProbe:
   enabled: true
-  path: "/api/v1/health"
+  path: ""
   initialDelaySeconds: 10
   periodSeconds: 15
   timeoutSeconds: 3
   failureThreshold: 3
 readinessProbe:
   enabled: true
-  path: "/api/v1/health"
+  path: ""
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 3
@@ -177,6 +178,9 @@ kellnr:
     # Can be a number, or null (~) to automatically set to 443 if protocol is https, otherwise 80
     port: null
     protocol: null # "http"
+    # URL path prefix Kellnr is served under, e.g. "/kellnr".
+    # Falls back to ingress.path if not set. Set it explicitly when using the HTTPRoute.
+    path: null
   postgres:
     enabled: null # false
     address: null # "localhost"
