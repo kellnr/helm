@@ -144,7 +144,8 @@ via `envFrom`:
 
 - a **ConfigMap** (`configMap.name`) holding the non-sensitive settings, and
 - a **Secret** (`secret.name`) holding the sensitive ones: the admin password and
-  token, the cookie signing key, the S3 keys, and the OAuth2 client secret.
+  token, the cookie signing key, the S3 keys, the GCS service account key, and the
+  OAuth2 client secret.
 
 | Setting               | Required | Description                                                                                       | Default         |
 |-----------------------|----------|---------------------------------------------------------------------------------------------------|-----------------|
@@ -368,7 +369,35 @@ inline or sourced from an existing Secret you manage yourself.
 | kellnr.s3.secretKeySecretRef.name | No       | Name of an existing Secret holding the secret key. Takes precedence over the inline value when set. | ""          |
 | kellnr.s3.secretKeySecretRef.key  | No       | Key within that Secret.                                                                             | "secretKey" |
 
+Crates, cached crates.io crates and toolchains are stored in S3 when it is enabled.
+Generated docs are only stored in S3 if `kellnr.s3.docs_bucket` is set; otherwise they
+stay on the local disk.
+
 For the full set of S3 options see: [values.yaml](./charts/kellnr/values.yaml)
+
+### GCS storage
+
+_Kellnr_ can use Google Cloud Storage (`kellnr.gcs.enabled`) instead of S3. Only one
+of the two can be enabled. As with S3, generated docs are only stored in GCS if
+`kellnr.gcs.docs_bucket` is set.
+
+Kellnr authenticates with Application Default Credentials. On GKE, use Workload
+Identity by annotating the chart's ServiceAccount, e.g.
+`serviceAccount.annotations."iam.gke.io/gcp-service-account"`. Alternatively, provide a
+service account key JSON, which is passed to Kellnr as `GOOGLE_SERVICE_ACCOUNT_KEY`.
+
+| Setting                                    | Required | Description                                                                                                       | Default             |
+|--------------------------------------------|----------|-------------------------------------------------------------------------------------------------------------------|---------------------|
+| kellnr.gcs.enabled                         | No       | Store crates in Google Cloud Storage.                                                                             | false               |
+| kellnr.gcs.serviceAccountKey               | No       | Inline service account key JSON.                                                                                  | ""                  |
+| kellnr.gcs.serviceAccountKeySecretRef.name | No       | Name of an existing Secret holding the service account key JSON. Takes precedence over the inline value when set. | ""                  |
+| kellnr.gcs.serviceAccountKeySecretRef.key  | No       | Key within that Secret.                                                                                           | "serviceAccountKey" |
+| kellnr.gcs.crates_bucket                   | No       | Bucket for crates.                                                                                                | "kellnr-crates"     |
+| kellnr.gcs.cratesio_bucket                 | No       | Bucket for cached crates.io crates.                                                                               | "kellnr-cratesio"   |
+| kellnr.gcs.toolchain_bucket                | No       | Bucket for toolchains.                                                                                            | "kellnr-toolchains" |
+| kellnr.gcs.docs_bucket                     | No       | Bucket for generated docs. Docs stay on local disk if unset.                                                      | unset               |
+
+For the full set of GCS options see: [values.yaml](./charts/kellnr/values.yaml)
 
 ## Feedback
 

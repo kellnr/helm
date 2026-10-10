@@ -230,6 +230,39 @@ KELLNR_S3__CRATESIO_BUCKET: {{ .Values.kellnr.s3.cratesio_bucket | quote }}
 {{ if not (eq .Values.kellnr.s3.docs_bucket nil) }}
 KELLNR_S3__DOCS_BUCKET: {{ .Values.kellnr.s3.docs_bucket | quote }}
 {{ end }}
+{{ if and .Values.kellnr.s3.enabled .Values.kellnr.gcs.enabled }}
+{{ fail "kellnr.s3.enabled and kellnr.gcs.enabled are mutually exclusive." }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.enabled nil) }}
+KELLNR_GCS__ENABLED: {{ .Values.kellnr.gcs.enabled | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.endpoint nil) }}
+KELLNR_GCS__ENDPOINT: {{ .Values.kellnr.gcs.endpoint | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.allowHttp nil) }}
+KELLNR_GCS__ALLOW_HTTP: {{ .Values.kellnr.gcs.allowHttp | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.skipSignature nil) }}
+KELLNR_GCS__SKIP_SIGNATURE: {{ .Values.kellnr.gcs.skipSignature | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.connectTimeoutSeconds nil) }}
+KELLNR_GCS__CONNECT_TIMEOUT_SECONDS: {{ .Values.kellnr.gcs.connectTimeoutSeconds | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.requestTimeoutSeconds nil) }}
+KELLNR_GCS__REQUEST_TIMEOUT_SECONDS: {{ .Values.kellnr.gcs.requestTimeoutSeconds | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.crates_bucket nil) }}
+KELLNR_GCS__CRATES_BUCKET: {{ .Values.kellnr.gcs.crates_bucket | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.cratesio_bucket nil) }}
+KELLNR_GCS__CRATESIO_BUCKET: {{ .Values.kellnr.gcs.cratesio_bucket | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.docs_bucket nil) }}
+KELLNR_GCS__DOCS_BUCKET: {{ .Values.kellnr.gcs.docs_bucket | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.gcs.toolchain_bucket nil) }}
+KELLNR_GCS__TOOLCHAIN_BUCKET: {{ .Values.kellnr.gcs.toolchain_bucket | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.oauth2.enabled nil) }}
 KELLNR_OAUTH2__ENABLED: {{ .Values.kellnr.oauth2.enabled | quote }}
 {{ end }}
@@ -296,6 +329,9 @@ KELLNR_S3__ACCESS_KEY: {{ .Values.kellnr.s3.accessKey | quote }}
 {{ end }}
 {{ if and .Values.kellnr.s3.secretKey (not .Values.kellnr.s3.secretKeySecretRef.name) }}
 KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
+{{ end }}
+{{ if and .Values.kellnr.gcs.serviceAccountKey (not .Values.kellnr.gcs.serviceAccountKeySecretRef.name) }}
+GOOGLE_SERVICE_ACCOUNT_KEY: {{ .Values.kellnr.gcs.serviceAccountKey | quote }}
 {{ end }}
 {{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
 KELLNR_OAUTH2__CLIENT_SECRET: {{ .Values.kellnr.oauth2.clientSecret | quote }}
