@@ -120,6 +120,11 @@ spec:
             valueFrom:
               secretKeyRef: {{ toYaml .Values.kellnr.s3.secretKeySecretRef | nindent 16 }}
           {{- end }}
+          {{- if .Values.kellnr.gcs.serviceAccountKeySecretRef.name }}
+          - name: GOOGLE_SERVICE_ACCOUNT_KEY
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.gcs.serviceAccountKeySecretRef | nindent 16 }}
+          {{- end }}
           {{- if and .Values.docBuilder.enabled .Values.docBuilder.tokenSecretRef.name }}
           - name: RUSTUP_TOOLCHAIN
             value: {{ .Values.docBuilder.rustupToolchain | quote }}

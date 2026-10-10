@@ -208,8 +208,30 @@ kellnr:
     allowHttp: null # true
     crates_bucket: null # "kellnr-crates"
     cratesio_bucket: null # "kellnr-cratesio"
-    docs_bucket: null # "kellnr-docs"
-    toolchain_bucket: null # "kellnr-toolchain"
+    # Docs are only stored in S3 when set; otherwise they stay on local disk.
+    docs_bucket: null # e.g. "kellnr-docs"
+    toolchain_bucket: null # "kellnr-toolchains"
+    connectTimeoutSeconds: null # 5
+    requestTimeoutSeconds: null # 30
+  # Google Cloud Storage. Only one of s3 and gcs can be enabled.
+  gcs:
+    enabled: null # false
+    # Credentials: without a service account key, Kellnr uses Application Default
+    # Credentials, e.g. GKE Workload Identity via serviceAccount.annotations.
+    serviceAccountKey: "" # service account key JSON
+    # When `name` is set, it takes precedence over the inline `serviceAccountKey` above.
+    serviceAccountKeySecretRef:
+      name: ""
+      key: "serviceAccountKey"
+    endpoint: null # unset: public Google Cloud Storage API
+    allowHttp: null # true
+    # Skip request signing. Only for unauthenticated endpoints such as emulators.
+    skipSignature: null # false
+    crates_bucket: null # "kellnr-crates"
+    cratesio_bucket: null # "kellnr-cratesio"
+    # Docs are only stored in GCS when set; otherwise they stay on local disk.
+    docs_bucket: null # e.g. "kellnr-docs"
+    toolchain_bucket: null # "kellnr-toolchains"
     connectTimeoutSeconds: null # 5
     requestTimeoutSeconds: null # 30
 
