@@ -227,6 +227,9 @@ KELLNR_S3__CRATES_BUCKET: {{ .Values.kellnr.s3.crates_bucket | quote }}
 {{ if not (eq .Values.kellnr.s3.cratesio_bucket nil) }}
 KELLNR_S3__CRATESIO_BUCKET: {{ .Values.kellnr.s3.cratesio_bucket | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.s3.docs_bucket nil) }}
+KELLNR_S3__DOCS_BUCKET: {{ .Values.kellnr.s3.docs_bucket | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.oauth2.enabled nil) }}
 KELLNR_OAUTH2__ENABLED: {{ .Values.kellnr.oauth2.enabled | quote }}
 {{ end }}

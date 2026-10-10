@@ -208,6 +208,7 @@ kellnr:
     allowHttp: null # true
     crates_bucket: null # "kellnr-crates"
     cratesio_bucket: null # "kellnr-cratesio"
+    docs_bucket: null # "kellnr-docs"
     toolchain_bucket: null # "kellnr-toolchain"
     connectTimeoutSeconds: null # 5
     requestTimeoutSeconds: null # 30
