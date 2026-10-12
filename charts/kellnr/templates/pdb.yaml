@@ -8,6 +8,6 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "kellnr.labels" . | nindent 6 }}
+      {{- include "kellnr.selectorLabels" . | nindent 6 }}
   minAvailable: {{ .Values.pdb.minAvailable }}
 {{- end }}

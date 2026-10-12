@@ -164,6 +164,21 @@ KELLNR_PROXY__NUM_THREADS: {{ .Values.kellnr.proxy.numThreads | quote }}
 {{ if not (eq .Values.kellnr.proxy.downloadOnUpdate nil) }}
 KELLNR_PROXY__DOWNLOAD_ON_UPDATE: {{ .Values.kellnr.proxy.downloadOnUpdate | quote }}
 {{ end }}
+{{ if .Values.kellnr.proxy.url }}
+KELLNR_PROXY__URL: {{ .Values.kellnr.proxy.url | quote }}
+{{ end }}
+{{ if .Values.kellnr.proxy.index }}
+KELLNR_PROXY__INDEX: {{ .Values.kellnr.proxy.index | quote }}
+{{ end }}
+{{ if .Values.kellnr.proxy.api }}
+KELLNR_PROXY__API: {{ .Values.kellnr.proxy.api | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.proxy.connectTimeoutSeconds nil) }}
+KELLNR_PROXY__CONNECT_TIMEOUT_SECONDS: {{ .Values.kellnr.proxy.connectTimeoutSeconds | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.proxy.requestTimeoutSeconds nil) }}
+KELLNR_PROXY__REQUEST_TIMEOUT_SECONDS: {{ .Values.kellnr.proxy.requestTimeoutSeconds | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.proxy.userAgent nil) }}
 KELLNR_PROXY__USER_AGENT: {{ .Values.kellnr.proxy.userAgent | quote }}
 {{ end }}
@@ -295,6 +310,12 @@ KELLNR_OAUTH2__READ_ONLY_GROUP_VALUE: {{ .Values.kellnr.oauth2.readOnlyGroupValu
 {{ end }}
 {{ if not (eq .Values.kellnr.oauth2.buttonText nil) }}
 KELLNR_OAUTH2__BUTTON_TEXT: {{ .Values.kellnr.oauth2.buttonText | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.oauth2.enforced nil) }}
+KELLNR_OAUTH2__ENFORCED: {{ .Values.kellnr.oauth2.enforced | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.oauth2.autoRedirect nil) }}
+KELLNR_OAUTH2__AUTO_REDIRECT: {{ .Values.kellnr.oauth2.autoRedirect | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.toolchain.enabled nil) }}
 KELLNR_TOOLCHAIN__ENABLED: {{ .Values.kellnr.toolchain.enabled | quote }}
