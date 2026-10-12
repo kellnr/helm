@@ -164,8 +164,14 @@ kellnr:
     maxSize: null # 100
   proxy:
     enabled: null # false
-    numThreads: null # 20
+    numThreads: null # 10
     downloadOnUpdate: null # false
+    # Override to use a crates.io mirror instead of the public crates.io.
+    url: null # "https://static.crates.io/crates/"
+    index: null # "https://index.crates.io/"
+    api: null # "https://crates.io/api/v1/crates/"
+    connectTimeoutSeconds: null # 5
+    requestTimeoutSeconds: null # 30
     userAgent: null # "kellnr.io/kellnr"
   log:
     level: null # "info"
@@ -267,6 +273,11 @@ kellnr:
     readOnlyGroupValue: ""
     # Text displayed on the OAuth2 login button
     buttonText: null # "Login with SSO"
+    # Make SSO the only way to log in: disables local username/password login,
+    # password resets/changes and local user creation. Requires `enabled`.
+    enforced: null # false
+    # Skip the login page and redirect straight to the identity provider. Requires `enforced`.
+    autoRedirect: null # false
 
   toolchain:
     enabled: false
@@ -294,6 +305,8 @@ ingress:
   enabled: true
   className: ""
   annotations: {}
+  # Path of the Ingress rule (defaults to "/"). Also Kellnr's path prefix if kellnr.origin.path is unset.
+  path: ""
   pathType: Prefix
   tls:
     secretName: "kellnr-cert-secret"
