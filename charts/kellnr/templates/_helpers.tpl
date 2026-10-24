@@ -149,11 +149,23 @@ KELLNR_REGISTRY__REQUIRED_CRATE_FIELDS: {{ .Values.kellnr.registry.requiredCrate
 {{ if not (eq .Values.kellnr.registry.newCratesRestricted nil) }}
 KELLNR_REGISTRY__NEW_CRATES_RESTRICTED: {{ .Values.kellnr.registry.newCratesRestricted | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.registry.authMaxFailedAttempts nil) }}
+KELLNR_REGISTRY__AUTH_MAX_FAILED_ATTEMPTS: {{ .Values.kellnr.registry.authMaxFailedAttempts | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registry.authFailedAttemptsWindowSeconds nil) }}
+KELLNR_REGISTRY__AUTH_FAILED_ATTEMPTS_WINDOW_SECONDS: {{ .Values.kellnr.registry.authFailedAttemptsWindowSeconds | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.docs.enabled nil) }}
 KELLNR_DOCS__ENABLED: {{ .Values.kellnr.docs.enabled | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.docs.maxSize nil) }}
 KELLNR_DOCS__MAX_SIZE: {{ .Values.kellnr.docs.maxSize | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.docs.buildTimeoutSeconds nil) }}
+KELLNR_DOCS__BUILD_TIMEOUT_SECONDS: {{ .Values.kellnr.docs.buildTimeoutSeconds | quote }}
+{{ end }}
+{{ with .Values.kellnr.docs.buildWrapper }}
+KELLNR_DOCS__BUILD_WRAPPER: {{ join "," . | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.proxy.enabled nil) }}
 KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}
@@ -202,6 +214,12 @@ KELLNR_ORIGIN__PATH: {{ . | quote }}
 KELLNR_ORIGIN__PORT: {{ include "kellnr.serviceOriginPort" . | quote }}
 {{ if not (eq .Values.kellnr.origin.protocol nil) }}
 KELLNR_ORIGIN__PROTOCOL: {{ .Values.kellnr.origin.protocol | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.origin.cookieSecure nil) }}
+KELLNR_ORIGIN__COOKIE_SECURE: {{ .Values.kellnr.origin.cookieSecure | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.webhooks.blockPrivateTargets nil) }}
+KELLNR_WEBHOOKS__BLOCK_PRIVATE_TARGETS: {{ .Values.kellnr.webhooks.blockPrivateTargets | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.postgres.enabled nil) }}
 KELLNR_POSTGRESQL__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}

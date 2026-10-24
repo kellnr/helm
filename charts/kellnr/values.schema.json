@@ -55,7 +55,8 @@
             "hostname": { "type": "string", "minLength": 1 },
             "port": { "type": ["integer", "null"] },
             "protocol": { "type": ["string", "null"] },
-            "path": { "type": ["string", "null"] }
+            "path": { "type": ["string", "null"] },
+            "cookieSecure": { "type": ["boolean", "null"] }
           }
         },
         "oauth2": {

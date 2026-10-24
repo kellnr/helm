@@ -1,0 +1,13 @@
+# Exercise the security related settings.
+kellnr:
+  registry:
+    authMaxFailedAttempts: 5
+    authFailedAttemptsWindowSeconds: 600
+  docs:
+    enabled: true
+    buildTimeoutSeconds: 900
+    buildWrapper: ["/usr/bin/env", "--"]
+  origin:
+    cookieSecure: true
+  webhooks:
+    blockPrivateTargets: true

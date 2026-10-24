@@ -39,10 +39,20 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
+# The Kellnr image starts as root to trust imported certificates and to take
+# over volumes written by older (root) images, then switches to the
+# unprivileged "kellnr" user (uid 1000). That needs CHOWN, SETUID and SETGID.
+# Without them Kellnr keeps running as root and logs a warning. To run fully
+# non-root instead, drop the "add" list and set podSecurityContext to
+# runAsUser/runAsGroup/fsGroup 1000 (fsGroup does not apply to hostPath PVs).
 securityContext:
   capabilities:
     drop:
       - ALL
+    add:
+      - CHOWN
+      - SETUID
+      - SETGID
 
 # Health probes against Kellnr's /api/v1/health endpoint.
 # The startup probe gates liveness/readiness until the app is up
@@ -147,6 +157,11 @@ kellnr:
     downloadMaxConcurrent: null # 20, 0 means unlimited
     downloadCounterFlushSeconds: null # 30, 0 flushes on every download
 
+    # Failed logins per username within the window before Kellnr answers
+    # with HTTP 429. Applies to the web login and cargo basic auth.
+    authMaxFailedAttempts: null # 10, 0 disables the limit
+    authFailedAttemptsWindowSeconds: null # 300
+
     # Used to sign the session cookie. Must be at least 64 characters.
     # Recommended for multi-replica setups so all replicas share the same key
     # (otherwise users are logged out when routed to a different replica).
@@ -160,8 +175,13 @@ kellnr:
       key: "cookieSigningKey"
 
   docs:
+    # Building docs runs the build scripts and proc macros of every published
+    # crate inside the Kellnr pod. Only enable it for trusted publishers.
     enabled: null # false
     maxSize: null # 100
+    buildTimeoutSeconds: null # 1800, 0 disables the timeout
+    # Command prefix for the docs build process, e.g. a sandbox like bubblewrap.
+    buildWrapper: [] # e.g. ["bwrap", "--ro-bind", "/", "/", ...]
   proxy:
     enabled: null # false
     numThreads: null # 10
@@ -187,6 +207,9 @@ kellnr:
     # URL path prefix Kellnr is served under, e.g. "/kellnr".
     # Falls back to ingress.path if not set. Set it explicitly when using the HTTPRoute.
     path: null
+    # Force the Secure flag on cookies, e.g. when TLS terminates at the ingress
+    # while protocol is "http". null follows protocol.
+    cookieSecure: null # true / false
   postgres:
     enabled: null # false
     address: null # "localhost"
@@ -282,6 +305,10 @@ kellnr:
   toolchain:
     enabled: false
     maxSize: 500
+  webhooks:
+    # Also refuse webhook deliveries to loopback and private networks.
+    # Link-local and cloud metadata addresses are always refused.
+    blockPrivateTargets: null # false
 
 service:
   api:
@@ -350,6 +377,9 @@ docBuilder:
   rustupToolchain: "stable"
   registryName: kellnr
   configMapName: kellnr-doc-config
+  # The token is passed to the docs build as CARGO_REGISTRIES_<NAME>_TOKEN and
+  # is visible to the build scripts of the documented crates. Use a token of a
+  # dedicated read-only user.
   tokenSecretRef:
     name: kellnr-doc-token
     key: token
