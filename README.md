@@ -56,6 +56,24 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.3.0
+
+- Newer Kellnr images run Kellnr as the unprivileged `kellnr` user (uid 1000).
+  The container starts as root to trust imported certificates and to take over
+  data written by older images, then switches users. The default
+  `securityContext` therefore adds the `CHOWN`, `SETUID` and `SETGID`
+  capabilities. If you override `securityContext` and drop all capabilities,
+  Kellnr keeps running as root and logs a warning. To run fully non-root, see
+  [Security settings](#security-settings).
+- The doc builder's cargo config is mounted for both the old
+  (`/usr/local/cargo`) and the new (`/home/kellnr/.cargo`) `CARGO_HOME`.
+- The doc builder token (`docBuilder.tokenSecretRef`) is visible to the build
+  scripts of documented crates. Use a token of a dedicated read-only user.
+- New optional settings: `kellnr.registry.authMaxFailedAttempts`,
+  `kellnr.registry.authFailedAttemptsWindowSeconds`,
+  `kellnr.docs.buildTimeoutSeconds`, `kellnr.docs.buildWrapper`,
+  `kellnr.origin.cookieSecure` and `kellnr.webhooks.blockPrivateTargets`.
+
 #### Chart version 6.0.0
 
 **Breaking change: configuration is now split into a ConfigMap and a Secret.**
@@ -230,6 +248,42 @@ kellnr:
       name: my-cookie-secret
       key: cookieSigningKey
 ````
+
+#### Security settings
+
+All values default to `null` or an empty list, which keeps Kellnr's own default.
+
+| Setting                                          | Required | Description                                                                                                  | Default |
+|--------------------------------------------------|----------|--------------------------------------------------------------------------------------------------------------|---------|
+| kellnr.registry.authMaxFailedAttempts            | No       | Failed logins per username within the window before Kellnr answers with HTTP 429. `0` disables the limit.    | null (10) |
+| kellnr.registry.authFailedAttemptsWindowSeconds  | No       | Length of the failed login window in seconds.                                                                | null (300) |
+| kellnr.docs.buildTimeoutSeconds                  | No       | Maximum duration of a single rustdoc build. `0` disables the timeout.                                        | null (1800) |
+| kellnr.docs.buildWrapper                         | No       | Command prefix for the rustdoc build process, e.g. a sandbox.                                                | [] |
+| kellnr.origin.cookieSecure                       | No       | Force the `Secure` cookie flag, e.g. when TLS terminates at the ingress while `origin.protocol` is `http`.    | null (follows protocol) |
+| kellnr.webhooks.blockPrivateTargets              | No       | Also refuse webhook deliveries to loopback and private networks. Link-local and cloud metadata addresses are always refused. | null (false) |
+
+Building docs (`kellnr.docs.enabled`) runs the build scripts and proc macros of
+every published crate inside the Kellnr pod, so only enable it for trusted
+publishers or confine the build with `kellnr.docs.buildWrapper`.
+
+To run the container fully non-root, drop the added capabilities and let
+Kubernetes set the user and the volume group:
+
+````yaml
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  fsGroup: 1000
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+````
+
+Imported certificates (`importCert`) are still trusted in this mode. Note that
+`fsGroup` does not change the owner of `hostPath` volumes (`pv.enabled`), so
+data written by older images there must be made writable for uid 1000 first.
 
 #### Extra environment variables
 

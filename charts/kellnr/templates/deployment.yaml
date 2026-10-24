@@ -196,8 +196,14 @@ spec:
               readOnly: true
             {{- end }}
             {{- if .Values.docBuilder.enabled }}
+            # Kellnr images up to 6.10 use /usr/local/cargo as CARGO_HOME,
+            # newer images run as the kellnr user with /home/kellnr/.cargo.
             - name: cargo-config
               mountPath: "/usr/local/cargo/config.toml"
+              subPath: config.toml
+              readOnly: true
+            - name: cargo-config
+              mountPath: "/home/kellnr/.cargo/config.toml"
               subPath: config.toml
               readOnly: true
             {{- end }}
