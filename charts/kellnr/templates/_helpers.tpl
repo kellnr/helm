@@ -221,6 +221,30 @@ KELLNR_ORIGIN__COOKIE_SECURE: {{ .Values.kellnr.origin.cookieSecure | quote }}
 {{ if not (eq .Values.kellnr.webhooks.blockPrivateTargets nil) }}
 KELLNR_WEBHOOKS__BLOCK_PRIVATE_TARGETS: {{ .Values.kellnr.webhooks.blockPrivateTargets | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.cratesioFilter.licenseEnabled nil) }}
+KELLNR_CRATESIO_FILTER__LICENSE_ENABLED: {{ .Values.kellnr.cratesioFilter.licenseEnabled | quote }}
+{{ end }}
+{{ with .Values.kellnr.cratesioFilter.licenseAllowed }}
+KELLNR_CRATESIO_FILTER__LICENSE_ALLOWED: {{ join "," . | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.cratesioFilter.licenseUnknown nil) }}
+KELLNR_CRATESIO_FILTER__LICENSE_UNKNOWN: {{ .Values.kellnr.cratesioFilter.licenseUnknown | quote }}
+{{ end }}
+{{ with .Values.kellnr.cratesioFilter.licenseExemptCrates }}
+KELLNR_CRATESIO_FILTER__LICENSE_EXEMPT_CRATES: {{ join "," . | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registryFilter.licenseEnabled nil) }}
+KELLNR_REGISTRY_FILTER__LICENSE_ENABLED: {{ .Values.kellnr.registryFilter.licenseEnabled | quote }}
+{{ end }}
+{{ with .Values.kellnr.registryFilter.licenseAllowed }}
+KELLNR_REGISTRY_FILTER__LICENSE_ALLOWED: {{ join "," . | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registryFilter.licenseUnknown nil) }}
+KELLNR_REGISTRY_FILTER__LICENSE_UNKNOWN: {{ .Values.kellnr.registryFilter.licenseUnknown | quote }}
+{{ end }}
+{{ with .Values.kellnr.registryFilter.licenseExemptCrates }}
+KELLNR_REGISTRY_FILTER__LICENSE_EXEMPT_CRATES: {{ join "," . | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.postgres.enabled nil) }}
 KELLNR_POSTGRESQL__ENABLED: {{ .Values.kellnr.postgres.enabled | quote }}
 {{ end }}

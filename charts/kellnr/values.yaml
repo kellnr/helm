@@ -309,6 +309,25 @@ kellnr:
     # Also refuse webhook deliveries to loopback and private networks.
     # Link-local and cloud metadata addresses are always refused.
     blockPrivateTargets: null # false
+  # License filter for downloads through the crates.io proxy.
+  # Denied downloads answer with HTTP 403 and the reason. Publishing is not
+  # filtered. Requires Kellnr 6.13.0 or newer.
+  cratesioFilter:
+    licenseEnabled: null # false
+    # Allowed SPDX license identifiers. An ID also allows it with any
+    # "WITH" exception. Kellnr fails to start on an invalid identifier.
+    licenseAllowed: [] # e.g. ["MIT", "Apache-2.0"]
+    # Decision for crates without a known or valid license.
+    licenseUnknown: null # "deny" or "allow", default "deny"
+    # Crates that are allowed regardless of their license.
+    licenseExemptCrates: [] # e.g. ["ring"]
+  # License filter for downloads of crates hosted in Kellnr.
+  # Same settings as cratesioFilter.
+  registryFilter:
+    licenseEnabled: null # false
+    licenseAllowed: []
+    licenseUnknown: null # "deny"
+    licenseExemptCrates: []
 
 service:
   api:

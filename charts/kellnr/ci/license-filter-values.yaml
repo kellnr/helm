@@ -1,0 +1,10 @@
+# Exercise the license filter settings.
+kellnr:
+  cratesioFilter:
+    licenseEnabled: true
+    licenseAllowed: ["MIT", "Apache-2.0"]
+    licenseUnknown: allow
+    licenseExemptCrates: ["ring"]
+  registryFilter:
+    licenseEnabled: true
+    licenseAllowed: ["MIT"]

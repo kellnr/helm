@@ -67,7 +67,9 @@
               "items": { "type": "string" }
             }
           }
-        }
+        },
+        "cratesioFilter": { "$ref": "#/definitions/licenseFilter" },
+        "registryFilter": { "$ref": "#/definitions/licenseFilter" }
       }
     },
     "service": {
@@ -101,6 +103,21 @@
     }
   },
   "definitions": {
+    "licenseFilter": {
+      "type": "object",
+      "properties": {
+        "licenseEnabled": { "type": ["boolean", "null"] },
+        "licenseAllowed": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        },
+        "licenseUnknown": { "enum": ["deny", "allow", null] },
+        "licenseExemptCrates": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        }
+      }
+    },
     "toggle": {
       "type": "object",
       "properties": {

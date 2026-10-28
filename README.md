@@ -56,6 +56,12 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.4.0
+
+- New optional settings for the license filter: `kellnr.cratesioFilter.*` and
+  `kellnr.registryFilter.*`. See [License filter](#license-filter). They
+  require Kellnr 6.13.0 or newer; older versions ignore them.
+
 #### Chart version 6.3.0
 
 - Newer Kellnr images run Kellnr as the unprivileged `kellnr` user (uid 1000).
@@ -284,6 +290,35 @@ securityContext:
 Imported certificates (`importCert`) are still trusted in this mode. Note that
 `fsGroup` does not change the owner of `hostPath` volumes (`pv.enabled`), so
 data written by older images there must be made writable for uid 1000 first.
+
+#### License filter
+
+Kellnr can deny downloads of crates whose license is not allowed, separately
+for the crates.io proxy (`kellnr.cratesioFilter`) and for crates hosted in
+Kellnr (`kellnr.registryFilter`). Cargo shows the reason of a denied download.
+Publishing is not filtered. Both sections have the same settings:
+
+| Setting                                    | Required | Description                                                                                                      | Default |
+|--------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------|---------|
+| kellnr.cratesioFilter.licenseEnabled       | No       | Deny downloads of crates whose license is not allowed.                                                           | null (false) |
+| kellnr.cratesioFilter.licenseAllowed       | No       | Allowed SPDX license identifiers. An identifier also allows it with any `WITH` exception. Kellnr fails to start on an invalid identifier. | [] |
+| kellnr.cratesioFilter.licenseUnknown       | No       | Decision for crates without a known or valid license: `deny` or `allow`.                                         | null (deny) |
+| kellnr.cratesioFilter.licenseExemptCrates  | No       | Crates that are allowed regardless of their license.                                                             | [] |
+
+Example that allows only permissive licenses from crates.io:
+
+````yaml
+kellnr:
+  proxy:
+    enabled: true
+  cratesioFilter:
+    licenseEnabled: true
+    licenseAllowed: ["MIT", "Apache-2.0", "BSD-3-Clause"]
+    licenseExemptCrates: ["ring"]
+````
+
+See the [Kellnr documentation](https://kellnr.io/documentation) for how
+license expressions are evaluated.
 
 #### Extra environment variables
 
