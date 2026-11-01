@@ -443,3 +443,15 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Extra Kubernetes manifests to deploy with the release. Each entry is either a
+# YAML object or a string; both are rendered through Helm's `tpl`, so template
+# expressions like {{ .Release.Name }} are supported.
+# extraObjects:
+#   - apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: "{{ .Release.Name }}-extra"
+#     data:
+#       foo: bar
+extraObjects: []
