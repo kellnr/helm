@@ -56,6 +56,11 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.5.0
+
+- New optional setting `extraObjects` to deploy arbitrary additional Kubernetes
+  resources with the release. See [Extra objects](#extra-objects).
+
 #### Chart version 6.4.0
 
 - New optional settings for the license filter: `kellnr.cratesioFilter.*` and
@@ -336,6 +341,39 @@ extraEnvVars:
   - name: AWS_REGION
     value: "eu-central-1"
 extraEnvVarsSecret: my-aws-credentials
+````
+
+#### Extra objects
+
+Use `extraObjects` to deploy additional Kubernetes resources (e.g. a `NetworkPolicy`,
+`ServiceMonitor` or `ExternalSecret`) with the release, without a wrapper chart. Each
+entry is either a YAML object or a string; both are rendered through Helm's `tpl`, so
+template expressions are supported.
+
+| Setting      | Required | Description                                             | Default |
+|--------------|----------|---------------------------------------------------------|---------|
+| extraObjects | No       | List of extra Kubernetes manifests (objects or strings). | []      |
+
+````yaml
+extraObjects:
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: "{{ .Release.Name }}-allow-ingress"
+    spec:
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: kellnr
+      policyTypes: ["Ingress"]
+      ingress:
+        - {}
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-extra
+    data:
+      namespace: {{ .Release.Namespace }}
 ````
 
 

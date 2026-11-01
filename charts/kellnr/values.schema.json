@@ -41,6 +41,10 @@
     "extraEnvVars": { "type": "array" },
     "extraEnvVarsCM": { "type": "string" },
     "extraEnvVarsSecret": { "type": "string" },
+    "extraObjects": {
+      "type": "array",
+      "items": { "type": ["object", "string"] }
+    },
     "startupProbe": { "$ref": "#/definitions/probe" },
     "livenessProbe": { "$ref": "#/definitions/probe" },
     "readinessProbe": { "$ref": "#/definitions/probe" },
