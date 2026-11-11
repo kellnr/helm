@@ -72,7 +72,16 @@
             }
           }
         },
-        "cratesioFilter": { "$ref": "#/definitions/licenseFilter" },
+        "cratesioFilter": {
+          "allOf": [{ "$ref": "#/definitions/licenseFilter" }],
+          "properties": {
+            "minReleaseAgeSeconds": { "type": ["integer", "null"], "minimum": 0 },
+            "minReleaseAgeExemptCrates": {
+              "type": ["array", "null"],
+              "items": { "type": "string" }
+            }
+          }
+        },
         "registryFilter": { "$ref": "#/definitions/licenseFilter" }
       }
     },

@@ -1,0 +1,8 @@
+# Exercise the minimum release age settings.
+kellnr:
+  proxy:
+    enabled: true
+    removeDeletedVersions: true
+  cratesioFilter:
+    minReleaseAgeSeconds: 259200
+    minReleaseAgeExemptCrates: ["openssl", "ring"]

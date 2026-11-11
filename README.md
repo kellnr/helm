@@ -56,6 +56,14 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.6.0
+
+- New optional settings `kellnr.proxy.removeDeletedVersions`,
+  `kellnr.cratesioFilter.minReleaseAgeSeconds` and
+  `kellnr.cratesioFilter.minReleaseAgeExemptCrates`. See
+  [Minimum release age](#minimum-release-age). They require Kellnr 7.1.0 or
+  newer; older versions ignore them.
+
 #### Chart version 6.5.0
 
 - New optional setting `extraObjects` to deploy arbitrary additional Kubernetes
@@ -324,6 +332,34 @@ kellnr:
 
 See the [Kellnr documentation](https://kellnr.io/documentation) for how
 license expressions are evaluated.
+
+#### Minimum release age
+
+Kellnr can hold back new versions from the crates.io proxy until they are a
+minimum age, so that a malicious release can be found before builds use it.
+Younger versions are left out of the index and their downloads are denied.
+
+| Setting                                         | Required | Description                                                                                         | Default |
+|-------------------------------------------------|----------|-----------------------------------------------------------------------------------------------------|---------|
+| kellnr.cratesioFilter.minReleaseAgeSeconds      | No       | Minimum age in seconds of a crates.io version before Kellnr serves it.                              | null (0, off) |
+| kellnr.cratesioFilter.minReleaseAgeExemptCrates | No       | Crates whose versions are served regardless of the minimum age. Kellnr fails to start on an invalid name. | [] |
+| kellnr.proxy.removeDeletedVersions              | No       | Remove crates and versions that crates.io deleted from the cache.                                   | null (false) |
+
+Enable `removeDeletedVersions` together with the minimum release age.
+Otherwise, a version that crates.io deletes while it is held back is served
+once it is old enough.
+
+````yaml
+kellnr:
+  proxy:
+    enabled: true
+    removeDeletedVersions: true
+  cratesioFilter:
+    minReleaseAgeSeconds: 259200 # 3 days
+    minReleaseAgeExemptCrates: ["openssl"]
+````
+
+See the [Kellnr documentation](https://kellnr.io/documentation) for details.
 
 #### Extra environment variables
 
