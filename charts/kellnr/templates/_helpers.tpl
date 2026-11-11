@@ -176,6 +176,9 @@ KELLNR_PROXY__NUM_THREADS: {{ .Values.kellnr.proxy.numThreads | quote }}
 {{ if not (eq .Values.kellnr.proxy.downloadOnUpdate nil) }}
 KELLNR_PROXY__DOWNLOAD_ON_UPDATE: {{ .Values.kellnr.proxy.downloadOnUpdate | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.proxy.removeDeletedVersions nil) }}
+KELLNR_PROXY__REMOVE_DELETED_VERSIONS: {{ .Values.kellnr.proxy.removeDeletedVersions | quote }}
+{{ end }}
 {{ if .Values.kellnr.proxy.url }}
 KELLNR_PROXY__URL: {{ .Values.kellnr.proxy.url | quote }}
 {{ end }}
@@ -232,6 +235,12 @@ KELLNR_CRATESIO_FILTER__LICENSE_UNKNOWN: {{ .Values.kellnr.cratesioFilter.licens
 {{ end }}
 {{ with .Values.kellnr.cratesioFilter.licenseExemptCrates }}
 KELLNR_CRATESIO_FILTER__LICENSE_EXEMPT_CRATES: {{ join "," . | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.cratesioFilter.minReleaseAgeSeconds nil) }}
+KELLNR_CRATESIO_FILTER__MIN_RELEASE_AGE_SECONDS: {{ .Values.kellnr.cratesioFilter.minReleaseAgeSeconds | int64 | quote }}
+{{ end }}
+{{ with .Values.kellnr.cratesioFilter.minReleaseAgeExemptCrates }}
+KELLNR_CRATESIO_FILTER__MIN_RELEASE_AGE_EXEMPT_CRATES: {{ join "," . | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.registryFilter.licenseEnabled nil) }}
 KELLNR_REGISTRY_FILTER__LICENSE_ENABLED: {{ .Values.kellnr.registryFilter.licenseEnabled | quote }}

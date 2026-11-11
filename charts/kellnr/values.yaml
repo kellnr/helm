@@ -186,6 +186,10 @@ kellnr:
     enabled: null # false
     numThreads: null # 10
     downloadOnUpdate: null # false
+    # Remove crates and versions that crates.io deleted, with their cached
+    # crate files, when the index of the crate is refreshed. Requires Kellnr
+    # 7.1.0 or newer.
+    removeDeletedVersions: null # false
     # Override to use a crates.io mirror instead of the public crates.io.
     url: null # "https://static.crates.io/crates/"
     index: null # "https://index.crates.io/"
@@ -321,6 +325,14 @@ kellnr:
     licenseUnknown: null # "deny" or "allow", default "deny"
     # Crates that are allowed regardless of their license.
     licenseExemptCrates: [] # e.g. ["ring"]
+    # Minimum age in seconds of a crates.io version before the proxy serves
+    # it. Younger versions are left out of the index and their downloads are
+    # denied. Enable proxy.removeDeletedVersions with it. Requires Kellnr
+    # 7.1.0 or newer.
+    minReleaseAgeSeconds: null # 0 (off), e.g. 259200 for 3 days
+    # Crates whose versions are served regardless of the minimum release age.
+    # Kellnr fails to start on an invalid crate name.
+    minReleaseAgeExemptCrates: [] # e.g. ["openssl"]
   # License filter for downloads of crates hosted in Kellnr.
   # Same settings as cratesioFilter.
   registryFilter:
