@@ -573,3 +573,7 @@ Run the following steps to release a new version of the chart.
 1. Change the `appVersion` in [Chart.yaml](./charts/kellnr/Chart.yaml) to the current image version.
 2. Increase the `version` in [Chart.yaml](./charts/kellnr/Chart.yaml).
 3. Push or create a Pull-Request to the `main`/`master` branch.
+
+CI publishes the release. Its release notes are generated from the pull requests
+merged since the previous chart release and grouped by label (see
+[release.yml](./.github/release.yml)).
