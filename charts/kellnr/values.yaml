@@ -182,6 +182,7 @@ kellnr:
     buildTimeoutSeconds: null # 1800, 0 disables the timeout
     # Command prefix for the docs build process, e.g. a sandbox like bubblewrap.
     buildWrapper: [] # e.g. ["bwrap", "--ro-bind", "/", "/", ...]
+    buildHistorySize: 100 # Number of history entries for built doc jobs
   proxy:
     enabled: null # false
     numThreads: null # 10
