@@ -134,6 +134,9 @@ kellnr:
     dataDir: "/var/lib/kellnr"
     sessionAgeSeconds: null # 28800
     cacheSize: null # 1000
+    # Max total size of the in-memory crate cache in MB. 0 means no size
+    # limit, only cacheSize applies. Requires Kellnr 7.0.0 or newer.
+    cacheMaxSize: null # 0
     maxCrateSize: null # 10
     authRequired: null # false
     requiredCrateFields: "" # Comma-separated list of fields, e.g. "description,license,repository"
@@ -161,6 +164,10 @@ kellnr:
     # with HTTP 429. Applies to the web login and cargo basic auth.
     authMaxFailedAttempts: null # 10, 0 disables the limit
     authFailedAttemptsWindowSeconds: null # 300
+
+    # Show links to sponsor Kellnr in the web UI and the startup log.
+    # Requires Kellnr 6.13.0 or newer.
+    sponsorLinksEnabled: null # true
 
     # Used to sign the session cookie. Must be at least 64 characters.
     # Recommended for multi-replica setups so all replicas share the same key
@@ -224,6 +231,14 @@ kellnr:
     pwdSecretRef:
       name: kellnr-postgres-user
       key: password
+    # Raw connection string ("postgres://user:pwd@host:5432/db?sslmode=require").
+    # When set, Kellnr uses it instead of address, port, db, user and pwd, and
+    # the chart does not mount pwdSecretRef. Requires Kellnr 6.10.0 or newer.
+    connectionString: ""
+    # When `name` is set, it takes precedence over the inline `connectionString` above.
+    connectionStringSecretRef:
+      name: ""
+      key: "connectionString"
   s3:
     enabled: null # false
     accessKey: ""
@@ -313,6 +328,10 @@ kellnr:
     # Also refuse webhook deliveries to loopback and private networks.
     # Link-local and cloud metadata addresses are always refused.
     blockPrivateTargets: null # false
+    # Connect to webhook targets directly instead of through HTTP_PROXY or
+    # HTTPS_PROXY. Through a proxy, only the proxy's address can be checked
+    # against the blocked targets. Requires Kellnr 7.0.0 or newer.
+    ignoreEnvProxy: null # false
   # License filter for downloads through the crates.io proxy.
   # Denied downloads answer with HTTP 403 and the reason. Publishing is not
   # filtered. Requires Kellnr 6.13.0 or newer.

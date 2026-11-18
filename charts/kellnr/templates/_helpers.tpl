@@ -107,6 +107,12 @@ KELLNR_REGISTRY__SESSION_AGE_SECONDS: {{ .Values.kellnr.registry.sessionAgeSecon
 {{ if not (eq .Values.kellnr.registry.cacheSize nil) }}
 KELLNR_REGISTRY__CACHE_SIZE: {{ .Values.kellnr.registry.cacheSize | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.registry.cacheMaxSize nil) }}
+KELLNR_REGISTRY__CACHE_MAX_SIZE: {{ .Values.kellnr.registry.cacheMaxSize | int64 | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.registry.sponsorLinksEnabled nil) }}
+KELLNR_REGISTRY__SPONSOR_LINKS_ENABLED: {{ .Values.kellnr.registry.sponsorLinksEnabled | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.registry.maxCrateSize nil) }}
 KELLNR_REGISTRY__MAX_CRATE_SIZE: {{ .Values.kellnr.registry.maxCrateSize | quote }}
 {{ end }}
@@ -223,6 +229,9 @@ KELLNR_ORIGIN__COOKIE_SECURE: {{ .Values.kellnr.origin.cookieSecure | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.webhooks.blockPrivateTargets nil) }}
 KELLNR_WEBHOOKS__BLOCK_PRIVATE_TARGETS: {{ .Values.kellnr.webhooks.blockPrivateTargets | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.webhooks.ignoreEnvProxy nil) }}
+KELLNR_WEBHOOKS__IGNORE_ENV_PROXY: {{ .Values.kellnr.webhooks.ignoreEnvProxy | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.cratesioFilter.licenseEnabled nil) }}
 KELLNR_CRATESIO_FILTER__LICENSE_ENABLED: {{ .Values.kellnr.cratesioFilter.licenseEnabled | quote }}
@@ -404,6 +413,9 @@ KELLNR_S3__SECRET_KEY: {{ .Values.kellnr.s3.secretKey | quote }}
 {{ end }}
 {{ if and .Values.kellnr.gcs.serviceAccountKey (not .Values.kellnr.gcs.serviceAccountKeySecretRef.name) }}
 GOOGLE_SERVICE_ACCOUNT_KEY: {{ .Values.kellnr.gcs.serviceAccountKey | quote }}
+{{ end }}
+{{ if and .Values.kellnr.postgres.connectionString (not .Values.kellnr.postgres.connectionStringSecretRef.name) }}
+KELLNR_POSTGRESQL__CONNECTION_STRING: {{ .Values.kellnr.postgres.connectionString | quote }}
 {{ end }}
 {{ if and .Values.kellnr.oauth2.clientSecret (not .Values.kellnr.oauth2.clientSecretRef.name) }}
 KELLNR_OAUTH2__CLIENT_SECRET: {{ .Values.kellnr.oauth2.clientSecret | quote }}

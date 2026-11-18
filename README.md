@@ -56,6 +56,17 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.7.0
+
+- New optional settings `kellnr.registry.cacheMaxSize`,
+  `kellnr.registry.sponsorLinksEnabled` and `kellnr.webhooks.ignoreEnvProxy`,
+  and a PostgreSQL connection string (`kellnr.postgres.connectionString` or
+  `kellnr.postgres.connectionStringSecretRef`). See
+  [Registry settings](#registry-settings) and
+  [PostgreSQL connection string](#postgresql-connection-string). They require
+  Kellnr 7.0.0 (cache size, webhook proxy), 6.13.0 (sponsor links) or 6.10.0
+  (connection string) or newer; older versions ignore them.
+
 #### Chart version 6.6.0
 
 - New optional settings `kellnr.proxy.removeDeletedVersions`,
@@ -181,8 +192,8 @@ via `envFrom`:
 
 - a **ConfigMap** (`configMap.name`) holding the non-sensitive settings, and
 - a **Secret** (`secret.name`) holding the sensitive ones: the admin password and
-  token, the cookie signing key, the S3 keys, the GCS service account key, and the
-  OAuth2 client secret.
+  token, the cookie signing key, the PostgreSQL connection string, the S3 keys, the
+  GCS service account key, and the OAuth2 client secret.
 
 | Setting               | Required | Description                                                                                       | Default         |
 |-----------------------|----------|---------------------------------------------------------------------------------------------------|-----------------|
@@ -280,6 +291,7 @@ All values default to `null` or an empty list, which keeps Kellnr's own default.
 | kellnr.docs.buildWrapper                         | No       | Command prefix for the rustdoc build process, e.g. a sandbox.                                                | [] |
 | kellnr.origin.cookieSecure                       | No       | Force the `Secure` cookie flag, e.g. when TLS terminates at the ingress while `origin.protocol` is `http`.    | null (follows protocol) |
 | kellnr.webhooks.blockPrivateTargets              | No       | Also refuse webhook deliveries to loopback and private networks. Link-local and cloud metadata addresses are always refused. | null (false) |
+| kellnr.webhooks.ignoreEnvProxy                   | No       | Connect to webhook targets directly instead of through `HTTP_PROXY`/`HTTPS_PROXY`. Through a proxy, only the proxy's address can be checked against the blocked targets. | null (false) |
 
 Building docs (`kellnr.docs.enabled`) runs the build scripts and proc macros of
 every published crate inside the Kellnr pod, so only enable it for trusted
@@ -303,6 +315,36 @@ securityContext:
 Imported certificates (`importCert`) are still trusted in this mode. Note that
 `fsGroup` does not change the owner of `hostPath` volumes (`pv.enabled`), so
 data written by older images there must be made writable for uid 1000 first.
+
+#### Registry settings
+
+| Setting                              | Required | Description                                                                                  | Default |
+|--------------------------------------|----------|----------------------------------------------------------------------------------------------|---------|
+| kellnr.registry.cacheMaxSize         | No       | Max total size of the in-memory crate cache in MB. `0` means only `cacheSize` limits it.     | null (0) |
+| kellnr.registry.sponsorLinksEnabled  | No       | Show links to sponsor Kellnr in the web UI and the startup log.                              | null (true) |
+
+#### PostgreSQL connection string
+
+Instead of `address`, `port`, `db`, `user` and the password, Kellnr can take a
+raw connection string, e.g. to set `sslmode` or other connection options.
+`kellnr.postgres.enabled` must still be `true`. When a connection string is
+set, the chart does not mount `kellnr.postgres.pwdSecretRef`, so that Secret
+does not have to exist.
+
+| Setting                                         | Required | Description                                                                                        | Default |
+|-------------------------------------------------|----------|----------------------------------------------------------------------------------------------------|---------|
+| kellnr.postgres.connectionString                | No       | Inline connection string, stored in the chart-managed Secret.                                      | "" |
+| kellnr.postgres.connectionStringSecretRef.name  | No       | Name of an existing Secret holding the connection string. Takes precedence over the inline value.  | "" |
+| kellnr.postgres.connectionStringSecretRef.key   | No       | Key within that Secret.                                                                            | "connectionString" |
+
+````yaml
+kellnr:
+  postgres:
+    enabled: true
+    connectionStringSecretRef:
+      name: kellnr-postgres
+      key: uri
+````
 
 #### License filter
 

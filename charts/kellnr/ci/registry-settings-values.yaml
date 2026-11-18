@@ -1,0 +1,7 @@
+# Exercise the crate cache size, sponsor links and webhook proxy settings.
+kellnr:
+  registry:
+    cacheMaxSize: 500
+    sponsorLinksEnabled: false
+  webhooks:
+    ignoreEnvProxy: true
