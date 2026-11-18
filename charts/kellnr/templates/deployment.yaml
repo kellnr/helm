@@ -85,10 +85,16 @@ spec:
           - name: RUST_BACKTRACE
             value: "1"
           {{- end }}
-          {{- if .Values.kellnr.postgres.enabled }}
+          {{- $pg := .Values.kellnr.postgres }}
+          {{- if and $pg.enabled (not $pg.connectionString) (not $pg.connectionStringSecretRef.name) }}
           - name: KELLNR_POSTGRESQL__PWD
             valueFrom:
-              secretKeyRef: {{ toYaml .Values.kellnr.postgres.pwdSecretRef | nindent 16 }}
+              secretKeyRef: {{ toYaml $pg.pwdSecretRef | nindent 16 }}
+          {{- end }}
+          {{- if $pg.connectionStringSecretRef.name }}
+          - name: KELLNR_POSTGRESQL__CONNECTION_STRING
+            valueFrom:
+              secretKeyRef: {{ toYaml $pg.connectionStringSecretRef | nindent 16 }}
           {{- end }}
           {{- if and .Values.kellnr.oauth2.enabled .Values.kellnr.oauth2.clientSecretRef.name }}
           - name: KELLNR_OAUTH2__CLIENT_SECRET

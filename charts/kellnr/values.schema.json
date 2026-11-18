@@ -63,6 +63,27 @@
             "cookieSecure": { "type": ["boolean", "null"] }
           }
         },
+        "registry": {
+          "type": "object",
+          "properties": {
+            "cacheMaxSize": { "type": ["integer", "null"], "minimum": 0 },
+            "sponsorLinksEnabled": { "type": ["boolean", "null"] }
+          }
+        },
+        "postgres": {
+          "type": "object",
+          "properties": {
+            "connectionString": { "type": "string" },
+            "connectionStringSecretRef": { "$ref": "#/definitions/secretRef" }
+          }
+        },
+        "webhooks": {
+          "type": "object",
+          "properties": {
+            "blockPrivateTargets": { "type": ["boolean", "null"] },
+            "ignoreEnvProxy": { "type": ["boolean", "null"] }
+          }
+        },
         "oauth2": {
           "type": "object",
           "properties": {
@@ -116,6 +137,13 @@
     }
   },
   "definitions": {
+    "secretRef": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "key": { "type": "string", "minLength": 1 }
+      }
+    },
     "licenseFilter": {
       "type": "object",
       "properties": {
