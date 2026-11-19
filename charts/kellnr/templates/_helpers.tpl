@@ -173,6 +173,9 @@ KELLNR_DOCS__BUILD_TIMEOUT_SECONDS: {{ .Values.kellnr.docs.buildTimeoutSeconds |
 {{ with .Values.kellnr.docs.buildWrapper }}
 KELLNR_DOCS__BUILD_WRAPPER: {{ join "," . | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.docs.buildHistorySize nil) }}
+KELLNR_DOCS__BUILD_HISTORY_SIZE: {{ .Values.kellnr.docs.buildHistorySize | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.proxy.enabled nil) }}
 KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}
 {{ end }}
