@@ -173,6 +173,9 @@ KELLNR_DOCS__BUILD_TIMEOUT_SECONDS: {{ .Values.kellnr.docs.buildTimeoutSeconds |
 {{ with .Values.kellnr.docs.buildWrapper }}
 KELLNR_DOCS__BUILD_WRAPPER: {{ join "," . | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.docs.buildHistorySize nil) }}
+KELLNR_DOCS__BUILD_HISTORY_SIZE: {{ .Values.kellnr.docs.buildHistorySize | quote }}
+{{ end }}
 {{ if not (eq .Values.kellnr.proxy.enabled nil) }}
 KELLNR_PROXY__ENABLED: {{ .Values.kellnr.proxy.enabled | quote }}
 {{ end }}
@@ -355,6 +358,9 @@ KELLNR_OAUTH2__SCOPES: {{ .Values.kellnr.oauth2.scopes | quote }}
 {{ end }}
 {{ if not (eq .Values.kellnr.oauth2.autoProvisionUsers nil) }}
 KELLNR_OAUTH2__AUTO_PROVISION_USERS: {{ .Values.kellnr.oauth2.autoProvisionUsers | quote }}
+{{ end }}
+{{ if not (eq .Values.kellnr.oauth2.autoProvisionReadOnly nil) }}
+KELLNR_OAUTH2__AUTO_PROVISION_READ_ONLY: {{ .Values.kellnr.oauth2.autoProvisionReadOnly | quote }}
 {{ end }}
 {{ if .Values.kellnr.oauth2.adminGroupClaim }}
 KELLNR_OAUTH2__ADMIN_GROUP_CLAIM: {{ .Values.kellnr.oauth2.adminGroupClaim | quote }}

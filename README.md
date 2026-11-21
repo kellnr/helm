@@ -56,6 +56,12 @@ helm upgrade kellnr kellnr/kellnr
 
 ### Upgrade Notes
 
+#### Chart version 6.8.0
+
+- New optional setting `kellnr.oauth2.autoProvisionReadOnly`. See
+  [OAuth2 read-only provisioning](#oauth2-read-only-provisioning). It requires
+  Kellnr 7.4.0 or newer; older versions ignore it.
+
 #### Chart version 6.7.0
 
 - New optional settings `kellnr.registry.cacheMaxSize`,
@@ -221,6 +227,23 @@ kellnr:
 
 The chart renders this as `KELLNR_OAUTH2__ADDITIONAL_AUDIENCES` in the
 Kellnr ConfigMap.
+
+#### OAuth2 read-only provisioning
+
+Set `kellnr.oauth2.autoProvisionReadOnly` to create users that Kellnr
+provisions on their first SSO login as read-only. They can download crates but
+not publish them, until an admin grants them write access. Users that the admin
+group claim makes admin are created with full access. The setting only applies
+when a user is created, so later changes by an admin are kept. It is ignored if
+`readOnlyGroupClaim` and `readOnlyGroupValue` are configured, as the identity
+provider then decides.
+
+```yaml
+kellnr:
+  oauth2:
+    autoProvisionUsers: true
+    autoProvisionReadOnly: true
+```
 
 #### Admin password and token
 
