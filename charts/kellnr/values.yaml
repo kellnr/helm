@@ -306,6 +306,9 @@ kellnr:
     scopes: null # "openid,profile,email"
     # Automatically create local user accounts for new OAuth2 users
     autoProvisionUsers: null # true
+    # Create automatically provisioned users as read-only, unless the admin group
+    # claim makes them admin. Ignored if readOnlyGroupClaim is configured.
+    autoProvisionReadOnly: null # false
     # Claim name to check for admin group membership (e.g., "groups")
     adminGroupClaim: ""
     # Value in the admin group claim that grants admin privileges (e.g., "kellnr-admins")
