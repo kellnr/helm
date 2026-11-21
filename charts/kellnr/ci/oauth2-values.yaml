@@ -1,0 +1,9 @@
+# Exercise the OAuth2 provisioning settings.
+kellnr:
+  oauth2:
+    enabled: true
+    issuerUrl: "https://idp.example.com"
+    clientId: "kellnr"
+    clientSecret: "secret"
+    autoProvisionUsers: true
+    autoProvisionReadOnly: true

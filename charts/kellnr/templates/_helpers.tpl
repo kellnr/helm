@@ -356,6 +356,9 @@ KELLNR_OAUTH2__SCOPES: {{ .Values.kellnr.oauth2.scopes | quote }}
 {{ if not (eq .Values.kellnr.oauth2.autoProvisionUsers nil) }}
 KELLNR_OAUTH2__AUTO_PROVISION_USERS: {{ .Values.kellnr.oauth2.autoProvisionUsers | quote }}
 {{ end }}
+{{ if not (eq .Values.kellnr.oauth2.autoProvisionReadOnly nil) }}
+KELLNR_OAUTH2__AUTO_PROVISION_READ_ONLY: {{ .Values.kellnr.oauth2.autoProvisionReadOnly | quote }}
+{{ end }}
 {{ if .Values.kellnr.oauth2.adminGroupClaim }}
 KELLNR_OAUTH2__ADMIN_GROUP_CLAIM: {{ .Values.kellnr.oauth2.adminGroupClaim | quote }}
 {{ end }}
